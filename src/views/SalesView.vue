@@ -182,6 +182,16 @@ function goToShiftClose() {
   router.push('/shift-close')
 }
 
+function goToReport() {
+  showShiftMenu.value = false
+  router.push('/sales/report')
+}
+
+function goToShiftHistory() {
+  showShiftMenu.value = false
+  router.push('/shifts')
+}
+
 // ─── Formatters ───────────────────────────────────────────────────────────────
 function formatPrice(price: number): string {
   return price.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
@@ -285,57 +295,74 @@ function formatTime(iso: string): string {
           </div>
         </div>
 
-        <!-- Shift Menu button: only when shifts enabled -->
-        <div v-if="settingsStore.shiftsEnabled" class="relative" data-dropdown>
+        <!-- Menu button: always available -->
+        <div class="relative" data-dropdown>
           <button
             class="flex items-center justify-center w-9 h-9 rounded-full border border-outline-variant text-on-surface-variant hover:bg-surface-variant transition-all active:scale-95"
-            aria-label="Opciones de turno"
+            aria-label="Opciones de ventas"
             @click.stop="showShiftMenu = !showShiftMenu"
           >
             <span class="material-symbols-outlined text-[20px]">more_vert</span>
           </button>
 
-          <!-- Shift Dropdown -->
+          <!-- Dropdown Menu -->
           <Transition name="fade-scale">
             <div
               v-if="showShiftMenu"
-              class="absolute right-0 top-full mt-2 z-50 bg-surface-container-high border border-outline-variant rounded-2xl p-2 shadow-[0_12px_32px_rgba(0,0,0,0.5)] w-52"
+              class="absolute right-0 top-full mt-2 z-50 bg-surface-container-high border border-outline-variant rounded-2xl p-2 shadow-[0_12px_32px_rgba(0,0,0,0.5)] w-56"
             >
-              <button
-                :class="[
-                  'w-full flex items-center gap-3 px-4 py-3 rounded-xl text-[14px] font-sans transition-all active:scale-95 text-left',
-                  shiftsStore.activeShift
-                    ? 'text-on-surface hover:bg-surface-variant'
-                    : 'text-on-surface-variant/40 cursor-not-allowed'
-                ]"
-                :disabled="!shiftsStore.activeShift"
-                @click="goToShiftClose"
-              >
-                <span class="material-symbols-outlined text-[18px]">lock_clock</span>
-                <div>
-                  <div class="font-medium">Cerrar turno</div>
-                  <div v-if="!shiftsStore.activeShift" class="text-[11px] text-on-surface-variant/40">
-                    No hay turno activo
-                  </div>
-                  <div v-else class="text-[11px] text-on-surface-variant/60">
-                    Turno #{{ shiftsStore.activeShift.id }}
-                  </div>
-                </div>
-              </button>
-
-              <!-- Separator -->
-              <div class="my-1 border-t border-outline-variant/50" />
-
+              <!-- Report item -->
               <button
                 class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-[14px] font-sans text-on-surface hover:bg-surface-variant transition-all active:scale-95 text-left"
-                @click="router.push('/shifts'); showShiftMenu = false"
+                @click="goToReport"
               >
-                <span class="material-symbols-outlined text-[18px]">history</span>
+                <span class="material-symbols-outlined text-[20px] text-primary-fixed-dim">analytics</span>
                 <div>
-                  <div class="font-medium">Historial de turnos</div>
-                  <div class="text-[11px] text-on-surface-variant/60">Ver todos los turnos</div>
+                  <div class="font-medium">Reporte del negocio</div>
+                  <div class="text-[11px] text-on-surface-variant/60">Ver resumen de ventas y exportar Excel</div>
                 </div>
               </button>
+
+              <template v-if="settingsStore.shiftsEnabled">
+                <!-- Separator -->
+                <div class="my-1 border-t border-outline-variant/50" />
+
+                <button
+                  :class="[
+                    'w-full flex items-center gap-3 px-4 py-3 rounded-xl text-[14px] font-sans transition-all active:scale-95 text-left',
+                    shiftsStore.activeShift
+                      ? 'text-on-surface hover:bg-surface-variant'
+                      : 'text-on-surface-variant/40 cursor-not-allowed'
+                  ]"
+                  :disabled="!shiftsStore.activeShift"
+                  @click="goToShiftClose"
+                >
+                  <span class="material-symbols-outlined text-[18px]">lock_clock</span>
+                  <div>
+                    <div class="font-medium">Cerrar turno</div>
+                    <div v-if="!shiftsStore.activeShift" class="text-[11px] text-on-surface-variant/40">
+                      No hay turno activo
+                    </div>
+                    <div v-else class="text-[11px] text-on-surface-variant/60">
+                      Turno #{{ shiftsStore.activeShift.id }}
+                    </div>
+                  </div>
+                </button>
+
+                <!-- Separator -->
+                <div class="my-1 border-t border-outline-variant/50" />
+
+                <button
+                  class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-[14px] font-sans text-on-surface hover:bg-surface-variant transition-all active:scale-95 text-left"
+                  @click="goToShiftHistory"
+                >
+                  <span class="material-symbols-outlined text-[18px]">history</span>
+                  <div>
+                    <div class="font-medium">Historial de turnos</div>
+                    <div class="text-[11px] text-on-surface-variant/60">Ver todos los turnos</div>
+                  </div>
+                </button>
+              </template>
             </div>
           </Transition>
         </div>
