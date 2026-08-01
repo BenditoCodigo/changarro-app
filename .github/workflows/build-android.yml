@@ -12,6 +12,7 @@ jobs:
   build-android:
     name: Build Android App Bundle & APK
     runs-on: ubuntu-latest
+    environment: prod
     env:
       KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
       KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
