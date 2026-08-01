@@ -35,7 +35,7 @@ jobs:
           java-version: '21'
 
       - name: Configurar Android SDK
-        uses: actions/setup-android@v3
+        uses: android-actions/setup-android@v4
 
       - name: Instalar dependencias de Node
         run: npm ci
