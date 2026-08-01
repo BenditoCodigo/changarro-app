@@ -130,9 +130,10 @@ function handleImport(event: Event) {
       alert('Respaldo combinado con éxito. La aplicación se recargará.')
       showImportModal.value = false
       window.location.reload()
-    } catch (error: any) {
-      console.error('Error al importar:', error)
-      alert('Error al restaurar el respaldo: ' + (error.message || error))
+    } catch (error) {
+      const err = error as Error
+      console.error('Error al importar:', err)
+      alert('Error al restaurar el respaldo: ' + (err.message || String(err)))
     } finally {
       importing.value = false
       target.value = '' // Clear input

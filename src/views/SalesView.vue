@@ -107,13 +107,13 @@ onMounted(() => document.addEventListener('click', handleOutsideClick))
 onUnmounted(() => document.removeEventListener('click', handleOutsideClick))
 
 // ─── Month selector ───────────────────────────────────────────────────────────
-const availableMonths = computed(() => {
+function getAvailableMonths(firstDate: Date | null): { label: string; value: string }[] {
   const months: { label: string; value: string }[] = []
   const now = new Date()
   const currentYear = now.getFullYear()
   const currentMonth = now.getMonth()
 
-  const startDate = firstSaleDate.value ?? now
+  const startDate = firstDate ?? now
   const startYear = startDate.getFullYear()
   const startMonth = startDate.getMonth()
 
@@ -129,7 +129,10 @@ const availableMonths = computed(() => {
       value: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`,
     })
     m--
-    if (m < 0) { m = 11; y-- }
+    if (m < 0) {
+      m = 11
+      y--
+    }
   }
 
   if (months.length === 0) {
@@ -142,7 +145,9 @@ const availableMonths = computed(() => {
   }
 
   return months
-})
+}
+
+const availableMonths = computed(() => getAvailableMonths(firstSaleDate.value))
 
 const selectedMonthLabel = computed(() => {
   if (activeFilter.value !== 'Mes') return 'Mes'

@@ -172,6 +172,24 @@ Estos se renderizan en `App.vue` y están presentes en todas las vistas.
 
 ---
 
+## Flujos de CI/CD y automatización (.github/ y scripts/)
+
+### .github/
+
+- **PULL_REQUEST_TEMPLATE.md**: Plantilla predeterminada que se autocompleta cuando un colaborador abre una Pull Request en GitHub.
+- **workflows/quality-pr.yml**: Pipeline liviano ejecutado en cada Pull Request hacia `main`. Valida linter (`npm run lint`), tipos (`npm run type-check`), pruebas unitarias (`npm run test:unit`) y compilación web (`npm run build`).
+- **workflows/build-android.yml**: Pipeline completo ejecutado al realizar `push` a la rama `main` o al crear etiquetas de versión (`v*`). Sincroniza con Capacitor, genera el archivo **AAB** para Google Play Store y el paquete **APK** firmado, y crea automáticamente una Release en GitHub al publicar etiquetas de versión.
+
+### scripts/
+
+Scripts auxiliares Bash y Python para desarrollo local y empaquetado:
+
+- **build-apk-capacitor.sh**: Compila el proyecto frontend, sincroniza con Capacitor y genera el APK de Android (modo `debug` o `release` firmado).
+- **clean-builds-capacitor.sh**: Limpia archivos y cachés temporales de Gradle y Capacitor.
+- **generate-icons-capacitor.py**: Genera los íconos de la app Android en todas las resoluciones requeridas a partir de una imagen origen.
+
+---
+
 ## Convenciones de código
 
 - **SFC**: siempre `<script setup lang="ts">`, orden: script → template → style
