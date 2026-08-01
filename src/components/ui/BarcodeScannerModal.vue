@@ -249,19 +249,19 @@ onBeforeUnmount(() => {
             v-if="hasCameraPermission"
             class="absolute inset-0 pointer-events-none flex flex-col items-center justify-center p-6"
           >
-            <!-- Frame Guide -->
-            <div class="w-64 h-48 border-2 border-primary-fixed-dim/80 rounded-2xl relative shadow-[0_0_0_9999px_rgba(0,0,0,0.5)] overflow-hidden">
+            <!-- Frame Guide with Light Ambient Mask -->
+            <div class="w-64 h-48 border-2 border-indigo-600 rounded-2xl relative shadow-[0_0_0_9999px_rgba(245,245,250,0.92)] overflow-hidden">
               <!-- Corner indicators -->
-              <div class="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-primary-fixed-dim rounded-tl-lg"></div>
-              <div class="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-primary-fixed-dim rounded-tr-lg"></div>
-              <div class="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-primary-fixed-dim rounded-bl-lg"></div>
-              <div class="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-primary-fixed-dim rounded-br-lg"></div>
+              <div class="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-indigo-600 rounded-tl-lg"></div>
+              <div class="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-indigo-600 rounded-tr-lg"></div>
+              <div class="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-indigo-600 rounded-bl-lg"></div>
+              <div class="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-indigo-600 rounded-br-lg"></div>
 
               <!-- Animated Scan Laser Line -->
-              <div class="w-full h-0.5 bg-primary-fixed-dim shadow-[0_0_8px_#c5c5d8] animate-pulse relative top-1/2 -translate-y-1/2"></div>
+              <div class="w-full h-0.5 bg-indigo-600 shadow-[0_0_10px_#4f46e5] animate-pulse relative top-1/2 -translate-y-1/2"></div>
             </div>
 
-            <p class="mt-6 text-sm font-medium text-white/90 bg-black/60 px-4 py-2 rounded-full backdrop-blur-sm">
+            <p class="mt-6 text-xs font-semibold text-white bg-slate-900/90 px-4 py-2 rounded-full backdrop-blur-md shadow-lg border border-slate-700/50">
               Coloca el código dentro del marco
             </p>
           </div>

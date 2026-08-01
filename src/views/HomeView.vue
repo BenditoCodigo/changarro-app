@@ -543,13 +543,13 @@ async function toggleTorch() {
           class="w-full h-full object-cover"
         ></video>
 
-        <!-- Scanner Viewfinder Overlay -->
+        <!-- Scanner Viewfinder Overlay with Light Frame Mask -->
         <div class="absolute inset-0 pointer-events-none flex flex-col items-center justify-center">
-          <div class="relative w-64 h-48 border-2 border-primary-fixed-dim/80 rounded-2xl overflow-hidden shadow-[0_0_0_9999px_rgba(0,0,0,0.4)]">
+          <div class="relative w-64 h-48 border-2 border-indigo-600 rounded-2xl overflow-hidden shadow-[0_0_0_9999px_rgba(245,245,250,0.92)]">
             <!-- Scanning Laser Line -->
-            <div class="absolute inset-x-0 h-0.5 bg-primary-fixed-dim shadow-[0_0_8px_#c5c5d8] animate-pulse top-1/2 -translate-y-1/2"></div>
+            <div class="absolute inset-x-0 h-0.5 bg-indigo-600 shadow-[0_0_10px_#4f46e5] animate-pulse top-1/2 -translate-y-1/2"></div>
           </div>
-          <span class="mt-4 px-3 py-1 bg-black/60 backdrop-blur-md rounded-full text-xs font-medium text-white/80 border border-white/10">
+          <span class="mt-4 px-3.5 py-1.5 bg-slate-900/90 text-white backdrop-blur-md rounded-full text-xs font-semibold shadow-lg border border-slate-700/50">
             Cámara activa · Cooldown de 2s
           </span>
         </div>
