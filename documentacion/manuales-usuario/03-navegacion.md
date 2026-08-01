@@ -92,9 +92,10 @@ Aquí puedes:
 
 Se accede desde Ajustes. Aquí gestionas tu catálogo completo de productos.
 
-- **Buscar productos**: usa la barra de búsqueda
+- **Buscar productos**: usa la barra de búsqueda por nombre, categoría o código de barras
 - **Agregar producto**: toca el botón **+** para crear uno nuevo
-- **Editar producto**: toca un producto existente para modificar sus datos
+- **Escanear código de barras**: al crear o editar un producto, puedes tocar el botón de cámara para capturar su código de barras automáticamente con la cámara del dispositivo (o ingresarlo manualmente)
+- **Editar producto**: toca un producto existente para modificar sus datos o código
 - **Eliminar producto**: usa el botón de eliminar y confirma
 
 ### Venta rápida
