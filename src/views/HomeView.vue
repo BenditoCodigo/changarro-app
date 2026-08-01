@@ -30,7 +30,7 @@ watch(
 )
 
 const filteredProducts = computed(() => {
-  return searchItems(productsStore.activeProducts, searchQuery.value, ['name', 'category'])
+  return searchItems(productsStore.activeProducts, searchQuery.value, ['name', 'category', 'barcode'])
 })
 
 function formatPrice(price: number): string {

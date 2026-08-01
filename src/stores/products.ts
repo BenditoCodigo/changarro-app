@@ -22,11 +22,17 @@ export const useProductsStore = defineStore('products', () => {
     return await db.products.get(id)
   }
 
+  async function getProductByBarcode(barcode: string): Promise<Product | undefined> {
+    if (!barcode) return undefined
+    return await db.products.where('barcode').equals(barcode).first()
+  }
+
   async function createProduct(data: {
     name: string
     price: number
     category: string
     unit: string
+    barcode?: string
   }): Promise<Product> {
     const now = new Date().toISOString()
     const product: Product = {
@@ -35,6 +41,7 @@ export const useProductsStore = defineStore('products', () => {
       price: data.price,
       category: data.category,
       unit: data.unit,
+      barcode: data.barcode?.trim() || undefined,
       isActive: true,
       createdAt: now,
       updatedAt: now,
@@ -46,14 +53,19 @@ export const useProductsStore = defineStore('products', () => {
 
   async function updateProduct(
     id: string,
-    data: { name?: string; price?: number; category?: string; unit?: string; isActive?: boolean },
+    data: { name?: string; price?: number; category?: string; unit?: string; barcode?: string; isActive?: boolean },
   ): Promise<void> {
     const updatedAt = new Date().toISOString()
-    await db.products.update(id, { ...data, updatedAt })
+    const payload = {
+      ...data,
+      barcode: data.barcode !== undefined ? (data.barcode.trim() || undefined) : undefined,
+      updatedAt,
+    }
+    await db.products.update(id, payload)
     const index = products.value.findIndex((p) => p.id === id)
     const existing = products.value[index]
     if (index !== -1 && existing) {
-      products.value[index] = { ...existing, ...data, updatedAt }
+      products.value[index] = { ...existing, ...payload }
     }
   }
 
@@ -69,6 +81,7 @@ export const useProductsStore = defineStore('products', () => {
     isLoading,
     loadProducts,
     getProductById,
+    getProductByBarcode,
     createProduct,
     updateProduct,
     deleteProduct,

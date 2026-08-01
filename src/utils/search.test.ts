@@ -152,4 +152,15 @@ describe('Search Utility - searchItems', () => {
     expect(results[1]!.name).toContain('Crema')
     expect(results[2]!.name).toBe('Cremoso Yoplait')
   })
+
+  it('should search products by barcode', () => {
+    const productsWithBarcode = [
+      { id: '1', name: 'Sabritas Sal 45g', category: 'Botanas', barcode: '7501000111223' },
+      { id: '2', name: 'Galletas Chokis', category: 'Galletas', barcode: '7501055300078' },
+    ]
+
+    const results = searchItems(productsWithBarcode, '7501055', ['name', 'category', 'barcode'])
+    expect(results).toHaveLength(1)
+    expect(results[0]!.name).toBe('Galletas Chokis')
+  })
 })

@@ -50,7 +50,7 @@ function cancelDelete() {
 }
 
 const filteredProducts = computed(() => {
-  return searchItems(store.products, searchQuery.value, ['name', 'category'])
+  return searchItems(store.products, searchQuery.value, ['name', 'category', 'barcode'])
 })
 </script>
 
@@ -129,8 +129,12 @@ const filteredProducts = computed(() => {
           <p class="mt-1 text-[17px] font-bold text-surface-tint">
             ${{ formatPrice(product.price) }}
           </p>
-          <p class="mt-0.5 text-[13px] text-on-surface-variant/60 capitalize">
-            {{ product.category }} · {{ product.unit }}
+          <p class="mt-0.5 text-[13px] text-on-surface-variant/60 capitalize flex items-center gap-1.5 flex-wrap">
+            <span>{{ product.category }} · {{ product.unit }}</span>
+            <span v-if="product.barcode" class="inline-flex items-center gap-0.5 text-[11px] bg-surface-container-high px-2 py-0.5 rounded-full text-primary-fixed-dim/90 font-mono">
+              <span class="material-symbols-outlined text-[12px]">barcode</span>
+              {{ product.barcode }}
+            </span>
           </p>
         </div>
 
