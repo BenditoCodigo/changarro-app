@@ -266,7 +266,7 @@ export async function exportReportToExcel(
     [{ value: 'Ventas con Transferencia:', fontWeight: 'bold' }, { value: reportData.kpis.transferTotal, format: '$#,##0.00' }, { value: `${reportData.kpis.transferPercentage}%` }],
     [],
     // Insights section
-    [{ value: 'INSIGHTS DEL NEGOCIO', fontWeight: 'bold', fontSize: 12, backgroundColor: HEADER_BG, color: HEADER_TEXT_COLOR }],
+    [{ value: 'DATOS CLAVE DEL NEGOCIO', fontWeight: 'bold', fontSize: 12, backgroundColor: HEADER_BG, color: HEADER_TEXT_COLOR }],
     [
       { value: 'Producto Estrella:', fontWeight: 'bold' },
       {
@@ -370,15 +370,25 @@ export async function exportReportToExcel(
   }
 
   // Generate Excel file blob/buffer
+  type RowData = Array<{ value: unknown; format?: string; fontWeight?: string; fontSize?: number; color?: string; backgroundColor?: string }>
+
   const sheets = [
-    sheet1Data as Array<Array<{ value: unknown; format?: string; fontWeight?: string; fontSize?: number; color?: string; backgroundColor?: string }>>,
-    sheet2Data as Array<Array<{ value: unknown; format?: string; fontWeight?: string; fontSize?: number; color?: string; backgroundColor?: string }>>,
-    sheet3Data as Array<Array<{ value: unknown; format?: string; fontWeight?: string; fontSize?: number; color?: string; backgroundColor?: string }>>,
+    {
+      sheet: 'Resumen de Ventas',
+      data: sheet1Data as RowData[],
+    },
+    {
+      sheet: 'Detalle de Ventas',
+      data: sheet2Data as RowData[],
+    },
+    {
+      sheet: 'Inventario',
+      data: sheet3Data as RowData[],
+    },
   ]
 
-  const fileBlob = await writeExcelFile(sheets, {
-    sheets: ['Resumen e Insights', 'Detalle de Ventas', 'Inventario'],
-  })
+  const output = writeExcelFile(sheets)
+  const fileBlob = await output.toBlob()
 
   const filename = `Reporte_Changarro_${reportData.period}_${new Date().toISOString().split('T')[0]}.xlsx`
 

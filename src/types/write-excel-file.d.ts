@@ -9,14 +9,20 @@ declare module 'write-excel-file/browser' {
     backgroundColor?: string
   }
 
-  export interface WriteExcelOptions {
-    sheets: string[]
+  export interface SheetObject {
+    sheet?: string
+    data: CellData[][]
+  }
+
+  export interface WriteExcelOutput {
+    toBlob: () => Promise<Blob>
+    toFile: (fileName: string) => Promise<void>
   }
 
   export default function writeExcelFile(
-    sheets: CellData[][][],
-    options: WriteExcelOptions,
-  ): Promise<Blob>
+    sheets: SheetObject[] | CellData[][],
+    options?: { sheet?: string },
+  ): WriteExcelOutput
 }
 
 declare module 'write-excel-file/universal' {
@@ -30,12 +36,18 @@ declare module 'write-excel-file/universal' {
     backgroundColor?: string
   }
 
-  export interface WriteExcelOptions {
-    sheets: string[]
+  export interface SheetObject {
+    sheet?: string
+    data: CellData[][]
+  }
+
+  export interface WriteExcelOutput {
+    toBlob: () => Promise<Blob>
+    toFile: (fileName: string) => Promise<void>
   }
 
   export default function writeExcelFile(
-    sheets: CellData[][][],
-    options: WriteExcelOptions,
-  ): Promise<Blob>
+    sheets: SheetObject[] | CellData[][],
+    options?: { sheet?: string },
+  ): WriteExcelOutput
 }
