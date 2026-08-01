@@ -12,17 +12,20 @@ con tecnologías web empaquetadas en un shell nativo.
 
 ```
 ┌────────────────────────────────────────────────────┐
-│                   Frontend                          │
+│                   Frontend                         │
 │         Vue 3.5 + Vite 8 + Tailwind CSS 4          │
-│             SPA empaquetada en Tauri 2              │
+│     SPA empaquetada en Capacitor 8 / Tauri 2        │
 ├────────────────────────────────────────────────────┤
 │                   Runtime nativo                   │
-│              Tauri 2 (Rust backend)                │
-│         Acceso a filesystem, notificaciones        │
+│         Capacitor 8 (Android Studio / Gradle)      │
+│         Tauri 2 (Rust backend - macOS / Windows)   │
 ├────────────────────────────────────────────────────┤
 │                   Persistencia                     │
 │          IndexedDB vía Dexie.js (local)            │
-│       Datos: productos, ventas, carrito, ajustes   │
+│  Datos: productos, imágenes, ventas, carrito...    │
+├────────────────────────────────────────────────────┤
+│             Integración Continua (CI/CD)            │
+│         GitHub Actions (Quality PR & Main Build)   │
 ├────────────────────────────────────────────────────┤
 │                   Plataformas                      │
 │          Android • Windows • macOS                 │
@@ -39,8 +42,10 @@ con tecnologías web empaquetadas en un shell nativo.
 | Estado global | Pinia (setup stores)                               | Stores tipados, integración directa con Vue            |
 | Estilos       | Tailwind CSS 4 (CSS-first con `@tailwindcss/vite`) | Utilidades CSS sin overhead, configuración en CSS puro |
 | Lenguaje      | TypeScript (strict mode)                           | Seguridad de tipos, mejor experiencia de desarrollo    |
-| Shell nativo  | Tauri 2                                            | Binarios ligeros, acceso nativo, multiplataforma       |
+| Runtime Móvil | Capacitor 8                                        | Empaquetado oficial para Android (AAB / APK)           |
+| Shell Escritorio| Tauri 2                                          | Binarios ligeros para macOS y Windows (Rust)           |
 | Persistencia  | IndexedDB vía Dexie.js                             | Persistencia local sin dependencias externas           |
+| CI / CD       | GitHub Actions                                     | Calidad automática en PRs y builds firmados en main    |
 | Testing       | Vitest + happy-dom + fake-indexeddb                | Pruebas rápidas, integradas con Vite                   |
 
 ## Principios arquitectónicos
@@ -222,13 +227,15 @@ Los tokens de diseño se definen en `src/assets/main.css` usando directivas
 
 ```
 changarro-app/
-├── documentacion/             ← Documentación del proyecto
-├── src-tauri/                 ← Shell nativo (Rust + Tauri 2)
-│   ├── Cargo.toml
-│   ├── tauri.conf.json
-│   ├── capabilities/
-│   └── src/
-└── src/                       ← Frontend (Vue)
+├── .github/
+│   └── workflows/
+│       ├── quality-pr.yml     ← CI de calidad para Pull Requests
+│       └── build-android.yml  ← CI/CD de compilación AAB/APK y Release para main
+├── android/                   ← Proyecto nativo Android (Capacitor)
+├── documentacion/             ← Documentación técnica y de usuario
+├── scripts/                   ← Scripts auxiliares (build-apk-capacitor.sh, etc.)
+├── src-tauri/                 ← Shell nativo para escritorio (Rust + Tauri 2)
+└── src/                       ← Frontend (Vue 3 + Tailwind 4)
     ├── assets/
     │   └── main.css           ← Tailwind + design tokens + @utility
     ├── components/
@@ -236,7 +243,8 @@ changarro-app/
     ├── router/
     │   └── index.ts           ← Definición de rutas
     ├── services/
-    │   └── db.ts              ← Dexie.js (IndexedDB)
+    │   ├── db.ts              ← Dexie.js (IndexedDB)
+    │   └── backup.ts          ← Servicio de respaldo e importación
     ├── stores/
     │   ├── products.ts        ← Store de productos
     │   ├── cart.ts            ← Store del carrito
@@ -245,18 +253,7 @@ changarro-app/
     │   └── shifts.ts          ← Store de turnos de caja (opcional)
     ├── composables/
     │   └── useParticles.ts    ← Animaciones de partículas
-    ├── views/
-    │   ├── HomeView.vue       ← Catálogo (/)
-    │   ├── CartView.vue       ← Carrito (/cart)
-    │   ├── SalesView.vue      ← Historial (/sales)
-    │   ├── SaleDetailView.vue ← Detalle de venta (/sales/:id)
-    │   ├── QuickSaleView.vue  ← Venta rápida (/quick-sale)
-    │   ├── SettingsView.vue   ← Ajustes (/settings)
-    │   ├── InventoryView.vue  ← Inventario (/settings/inventory)
-    │   ├── InventoryFormView.vue ← Crear/Editar producto
-    │   ├── ShiftCloseView.vue ← Cierre de turno (/shift-close)
-    │   ├── ShiftHistoryView.vue ← Historial de turnos (/shifts)
-    │   └── ShiftDetailView.vue ← Detalle de turno (/shifts/:id)
+    ├── views/                 ← Vistas SPA (HomeView, CartView, SalesView, etc.)
     ├── App.vue
     └── main.ts
 ```
