@@ -34,6 +34,9 @@ jobs:
           distribution: 'zulu'
           java-version: '21'
 
+      - name: Configurar Android SDK
+        uses: actions/setup-android@v3
+
       - name: Instalar dependencias de Node
         run: npm ci
 
@@ -59,31 +62,48 @@ jobs:
           cd android
           ./gradlew assembleRelease
 
-      - name: Firmar AAB Release (Si existen secretos en GitHub)
-        if: ${{ env.KEYSTORE_BASE64 != '' }}
-        uses: rstudio/sign-android-release@v1
-        id: sign_aab
-        with:
-          releaseDirectory: android/app/build/outputs/bundle/release
-          signingKeyBase64: ${{ env.KEYSTORE_BASE64 }}
-          alias: ${{ env.KEY_ALIAS }}
-          keyStorePassword: ${{ env.KEYSTORE_PASSWORD }}
-          keyPassword: ${{ env.KEY_PASSWORD }}
+      - name: Preparar carpeta de salida de artefactos
+        run: mkdir -p build-output
 
-      - name: Firmar APK Release (Si existen secretos en GitHub)
+      - name: Firmar artefactos AAB y APK (si existen secretos en GitHub)
         if: ${{ env.KEYSTORE_BASE64 != '' }}
-        uses: rstudio/sign-android-release@v1
-        id: sign_apk
-        with:
-          releaseDirectory: android/app/build/outputs/apk/release
-          signingKeyBase64: ${{ env.KEYSTORE_BASE64 }}
-          alias: ${{ env.KEY_ALIAS }}
-          keyStorePassword: ${{ env.KEYSTORE_PASSWORD }}
-          keyPassword: ${{ env.KEY_PASSWORD }}
-
-      - name: Organizar artefactos compilados
         run: |
-          mkdir -p build-output
+          # 1. Decodificar el Keystore
+          echo "${{ env.KEYSTORE_BASE64 }}" | base64 -d > release.keystore
+
+          # 2. Firmar el archivo .aab usando jarsigner (Java JDK)
+          AAB_PATH=$(find android/app/build/outputs/bundle/release -name "*.aab" | head -n 1)
+          if [ -n "$AAB_PATH" ]; then
+            jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
+              -keystore release.keystore \
+              -storepass "${{ env.KEYSTORE_PASSWORD }}" \
+              -keypass "${{ env.KEY_PASSWORD }}" \
+              "$AAB_PATH" \
+              "${{ env.KEY_ALIAS }}"
+            cp "$AAB_PATH" build-output/changarro-release.aab
+          fi
+
+          # 3. Firmar el archivo .apk usando apksigner (Android SDK)
+          APK_PATH=$(find android/app/build/outputs/apk/release -name "*.apk" | head -n 1)
+          if [ -n "$APK_PATH" ]; then
+            BUILD_TOOLS=$(ls -d $ANDROID_HOME/build-tools/* | sort -V | tail -n 1)
+            $BUILD_TOOLS/zipalign -f 4 "$APK_PATH" build-output/changarro-aligned.apk
+            $BUILD_TOOLS/apksigner sign \
+              --ks release.keystore \
+              --ks-pass "pass:${{ env.KEYSTORE_PASSWORD }}" \
+              --key-pass "pass:${{ env.KEY_PASSWORD }}" \
+              --ks-key-alias "${{ env.KEY_ALIAS }}" \
+              --out build-output/changarro-release.apk \
+              build-output/changarro-aligned.apk
+            rm -f build-output/changarro-aligned.apk
+          fi
+
+          # 4. Eliminar el Keystore temporal por seguridad
+          rm -f release.keystore
+
+      - name: Copiar paquetes sin firmar (fallback si no hay secretos)
+        if: ${{ env.KEYSTORE_BASE64 == '' }}
+        run: |
           cp android/app/build/outputs/bundle/release/*.aab build-output/ || true
           cp android/app/build/outputs/apk/release/*.apk build-output/ || true
 
