@@ -1,4 +1,4 @@
-import { db } from './db'
+import { db, type AppSettings, type Product, type Sale, type CartItemRecord, type Shift } from './db'
 
 /**
  * Converts a Blob to a Base64 string for JSON serialization.
@@ -22,7 +22,7 @@ function blobToBase64(blob: Blob): Promise<string> {
  */
 function base64ToBlob(base64: string, mimeType: string): Blob {
   const byteCharacters = atob(base64)
-  const byteNumbers = new Array(byteCharacters.length)
+  const byteNumbers = Array.from({ length: byteCharacters.length }) as number[]
   for (let i = 0; i < byteCharacters.length; i++) {
     byteNumbers[i] = byteCharacters.charCodeAt(i)
   }
@@ -33,12 +33,12 @@ function base64ToBlob(base64: string, mimeType: string): Blob {
 export interface BackupData {
   version: number
   exportedAt: string
-  settings: any[]
-  products: any[]
+  settings: AppSettings[]
+  products: Product[]
   images: Array<{ productId: string; base64: string; type: string }>
-  sales: any[]
-  cartItems: any[]
-  shifts: any[]
+  sales: Sale[]
+  cartItems: CartItemRecord[]
+  shifts: Shift[]
 }
 
 /**

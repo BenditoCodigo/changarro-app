@@ -111,24 +111,35 @@ npm run build
 Ejecuta verificación de tipos con TypeScript y genera los archivos estáticos
 optimizados en `dist/`.
 
-### Android
+### Android (Capacitor)
+
+Compilación mediante los scripts automatizados de Capacitor:
 
 ```bash
-npm run tauri android build
+./scripts/build-apk-capacitor.sh          # Build debug (.apk)
+./scripts/build-apk-capacitor.sh release  # Build release firmado (.apk)
 ```
 
-Genera el APK en `src-tauri/gen/android/app/build/outputs/apk/`.
+Para generar un **Android App Bundle (.aab)** para Google Play Store:
+
+```bash
+npm run cap:sync
+cd android && ./gradlew bundleRelease
+```
+
+El archivo se genera en `android/app/build/outputs/bundle/release/app-release.aab`.
 
 ---
 
-## Pruebas
+## Integración Continua (CI/CD con GitHub Actions)
 
-```bash
-npm run test:unit     # Ejecuta pruebas una vez y sale
-```
+El proyecto cuenta con un flujo automatizado en `.github/workflows/build-android.yml` que:
 
-Las pruebas usan Vitest con happy-dom y fake-indexeddb para simular el entorno
-del navegador y la base de datos local.
+1. Ejecuta verificación de tipos y tests unitarios.
+2. Compila la app web y sincroniza con Capacitor.
+3. Genera tanto el paquete **AAB (.aab)** para Play Store como el **APK (.apk)** para pruebas directas.
+4. Firma ambos archivos si los secretos de firma (`KEYSTORE_BASE64`, `KEY_ALIAS`, `KEYSTORE_PASSWORD`, `KEY_PASSWORD`) están configurados en el repositorio de GitHub.
+5. Al publicar una versión con tag `v*` (ejemplo `v0.6.0`), crea automáticamente una Release en GitHub anexando los instalables.
 
 ---
 
@@ -139,10 +150,10 @@ del navegador y la base de datos local.
 | `npm run dev`                 | Servidor de desarrollo (solo frontend, localhost:5173)     |
 | `npm run build`               | Build de producción del frontend con verificación de tipos |
 | `npm run test:unit`           | Ejecutar pruebas unitarias con Vitest                      |
+| `npm run cap:sync`            | Compila frontend y sincroniza con Capacitor Android        |
+| `npm run cap:open`            | Abre el proyecto Android en Android Studio                 |
 | `npm run tauri:dev`           | Desarrollo completo con shell nativo + hot reload          |
 | `npm run tauri:build`         | Build de producción completo para la plataforma actual     |
-| `npm run tauri android dev`   | Desarrollo en Android                                      |
-| `npm run tauri android build` | Build APK de producción                                    |
 
 ---
 
@@ -151,3 +162,4 @@ del navegador y la base de datos local.
 - [Arquitectura del proyecto](./01-arquitectura.md)
 - [Estructura del código](./03-estructura-codigo.md)
 - [Volver al índice](./README.md)
+

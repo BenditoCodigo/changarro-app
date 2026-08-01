@@ -16,7 +16,7 @@ export function normalizeText(str: string): string {
  */
 export function cleanText(str: string): string {
   return normalizeText(str)
-    .replace(/[\-.,_/\\]/g, ' ')
+    .replace(/[-.,_/\\]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim()
 }
