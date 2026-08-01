@@ -9,6 +9,8 @@ const DEFAULT_SETTINGS: AppSettings = {
   businessName: 'Mi Changarro',
   currency: 'MXN',
   shiftsEnabled: false,
+  barcodeScannerEnabled: true,
+  defaultHomeTab: 'catalog',
 }
 
 export const useSettingsStore = defineStore('settings', () => {
@@ -17,6 +19,8 @@ export const useSettingsStore = defineStore('settings', () => {
   const businessName = ref(DEFAULT_SETTINGS.businessName)
   const currency = ref(DEFAULT_SETTINGS.currency)
   const shiftsEnabled = ref(DEFAULT_SETTINGS.shiftsEnabled)
+  const barcodeScannerEnabled = ref(DEFAULT_SETTINGS.barcodeScannerEnabled ?? true)
+  const defaultHomeTab = ref<'catalog' | 'scanner'>(DEFAULT_SETTINGS.defaultHomeTab ?? 'catalog')
   const isLoaded = ref(false)
 
   async function loadSettings() {
@@ -27,6 +31,8 @@ export const useSettingsStore = defineStore('settings', () => {
       businessName.value = stored.businessName
       currency.value = stored.currency
       shiftsEnabled.value = stored.shiftsEnabled ?? false
+      barcodeScannerEnabled.value = stored.barcodeScannerEnabled ?? true
+      defaultHomeTab.value = stored.defaultHomeTab ?? 'catalog'
     } else {
       await db.settings.put(DEFAULT_SETTINGS)
     }
@@ -45,6 +51,16 @@ export const useSettingsStore = defineStore('settings', () => {
 
   async function setBusinessName(value: string) {
     businessName.value = value
+    await persist()
+  }
+
+  async function setBarcodeScannerEnabled(value: boolean) {
+    barcodeScannerEnabled.value = value
+    await persist()
+  }
+
+  async function setDefaultHomeTab(value: 'catalog' | 'scanner') {
+    defaultHomeTab.value = value
     await persist()
   }
 
@@ -81,6 +97,8 @@ export const useSettingsStore = defineStore('settings', () => {
       businessName: businessName.value,
       currency: currency.value,
       shiftsEnabled: shiftsEnabled.value,
+      barcodeScannerEnabled: barcodeScannerEnabled.value,
+      defaultHomeTab: defaultHomeTab.value,
     })
   }
 
@@ -90,11 +108,15 @@ export const useSettingsStore = defineStore('settings', () => {
     businessName,
     currency,
     shiftsEnabled,
+    barcodeScannerEnabled,
+    defaultHomeTab,
     isLoaded,
     loadSettings,
     setTaxEnabled,
     setTaxRate,
     setBusinessName,
     setShiftsEnabled,
+    setBarcodeScannerEnabled,
+    setDefaultHomeTab,
   }
 })

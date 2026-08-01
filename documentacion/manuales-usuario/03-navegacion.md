@@ -32,14 +32,21 @@ En la parte superior de la pantalla verás:
 
 ## Secciones de la aplicación
 
-### Inicio (catálogo)
+### Inicio (Vender)
 
-Es la pantalla principal. Aquí ves todos los productos que has registrado.
+Es la pantalla principal para registrar ventas. Si el modo de escáner está activo en Ajustes, la pantalla cuenta con 2 pestañas superiores:
 
-- **Buscar**: usa la barra de búsqueda para encontrar un producto por nombre (funciona aunque no escribas los acentos)
-- **Cambiar vista**: puedes alternar entre vista de lista y vista de cuadrícula
-- **Agregar al carrito**: toca un producto y se agrega automáticamente
-- **Venta rápida**: toca el botón **+** (abajo a la derecha) para agregar un producto personalizado sin registrarlo en el catálogo
+1. **📦 Catálogo (Vista tradicional)**:
+   - **Buscar**: barra de búsqueda por nombre, categoría o código de barras.
+   - **Cambiar vista**: alterna entre vista de lista y vista de cuadrícula.
+   - **Agregar al carrito**: toca un producto y se agrega automáticamente al carrito.
+   - **Venta rápida**: toca el botón **+** (abajo a la derecha) para agregar un producto o servicio temporal.
+
+2. **📷 Escáner Cajero (Modo Supermercado)**:
+   - **Cámara continua**: mantiene la cámara activa para pasar productos rápidamente uno tras otro como en una caja registradora.
+   - **Pausa de lectura (2s)**: evita registrar por accidente dos veces el mismo producto de forma inmediata.
+   - **Producto registrado**: emite un sonido, vibración y muestra una notificación flotante confirmando la adición al carrito.
+   - **Código no registrado**: si escaneas un producto que no está en el catálogo, muestra una alerta permitiendo agregarlo como Venta Rápida o registrarlo en el Inventario.
 
 ### Carrito
 
@@ -92,9 +99,10 @@ Aquí puedes:
 
 Se accede desde Ajustes. Aquí gestionas tu catálogo completo de productos.
 
-- **Buscar productos**: usa la barra de búsqueda
+- **Buscar productos**: usa la barra de búsqueda por nombre, categoría o código de barras
 - **Agregar producto**: toca el botón **+** para crear uno nuevo
-- **Editar producto**: toca un producto existente para modificar sus datos
+- **Escanear código de barras**: al crear o editar un producto, puedes tocar el botón de cámara para capturar su código de barras automáticamente con la cámara del dispositivo (o ingresarlo manualmente)
+- **Editar producto**: toca un producto existente para modificar sus datos o código
 - **Eliminar producto**: usa el botón de eliminar y confirma
 
 ### Venta rápida

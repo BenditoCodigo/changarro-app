@@ -39,7 +39,8 @@ Para ti, si:
 | 🛒 **Registrar ventas** | Toca un producto y se agrega al carrito. Así de fácil |
 | ⚡ **Venta rápida** | Cobra algo sin registrarlo en el catálogo |
 | 💵 **Calcular cambio** | Ingresa lo que te da el cliente y listo |
-| 📦 **Gestionar productos** | Tu catálogo completo con precios y categorías |
+| 📷 **Escáner de código de barras** | Asigna códigos de barras a productos escaneando con la cámara |
+| 📦 **Gestionar productos** | Tu catálogo completo con precios, códigos y categorías |
 | 💰 **Historial de ventas** | Consulta tus ventas por turno, día o mes |
 | 🕐 **Turnos de caja** | Organiza las ventas por turno y genera resúmenes de caja |
 | 🧾 **IVA automático** | Actívalo cuando lo necesites |

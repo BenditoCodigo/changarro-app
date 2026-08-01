@@ -4,6 +4,7 @@ import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { useProductsStore } from '@/stores/products'
 import { resizeImage, saveProductImage } from '@/composables/useProductImages'
 import { db } from '@/services/db'
+import BarcodeScannerModal from '@/components/ui/BarcodeScannerModal.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -17,6 +18,8 @@ const name = ref('')
 const price = ref('')
 const selectedCategory = ref('PRODUCTO')
 const selectedUnit = ref('pieza')
+const barcode = ref('')
+const showScanner = ref(false)
 const isLoadingProduct = ref(false)
 
 // Image state
@@ -44,6 +47,7 @@ onMounted(async () => {
         price.value = product.price.toString()
         selectedCategory.value = product.category
         selectedUnit.value = product.unit
+        barcode.value = product.barcode || ''
 
         // Load existing image
         const img = await db.productImages.get(productId.value)
@@ -57,6 +61,8 @@ onMounted(async () => {
     } finally {
       isLoadingProduct.value = false
     }
+  } else if (route.query.barcode) {
+    barcode.value = String(route.query.barcode)
   }
 })
 
@@ -65,6 +71,10 @@ onBeforeUnmount(() => {
     URL.revokeObjectURL(imagePreviewUrl.value)
   }
 })
+
+function onBarcodeScanned(code: string) {
+  barcode.value = code
+}
 
 function triggerFileInput() {
   fileInput.value?.click()
@@ -110,6 +120,7 @@ async function save() {
     price: parseFloat(price.value),
     category: selectedCategory.value,
     unit: selectedUnit.value,
+    barcode: barcode.value.trim() || undefined,
   }
 
   let id: string
@@ -218,6 +229,43 @@ async function save() {
             class="hidden"
             @change="handleFileSelect"
           />
+        </div>
+
+        <!-- Barcode Field with Camera Scanner Button -->
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <label
+              class="uppercase tracking-wider text-[14px] font-semibold text-on-surface-variant font-display"
+            >
+              Código de Barras (Opcional)
+            </label>
+            <span v-if="barcode" class="text-xs text-primary-fixed-dim font-medium flex items-center gap-1">
+              <span class="material-symbols-outlined text-sm">check_circle</span> Capturado
+            </span>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <div class="relative flex-1">
+              <span class="absolute left-5 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant/40 text-xl">
+                barcode
+              </span>
+              <input
+                v-model="barcode"
+                type="text"
+                placeholder="Ej. 7501055300078"
+                class="w-full bg-surface-container-low border border-outline-variant rounded-full pl-12 pr-6 py-4 text-[17px] text-on-surface placeholder:text-on-surface-variant/40 focus:ring-2 focus:ring-primary-fixed-dim focus:border-transparent outline-none transition-all"
+              />
+            </div>
+
+            <button
+              type="button"
+              class="shrink-0 h-14 px-5 rounded-full bg-surface-container-high border border-outline-variant text-on-surface hover:border-surface-tint active:scale-95 transition-all flex items-center gap-2 font-medium text-sm"
+              @click="showScanner = true"
+            >
+              <span class="material-symbols-outlined text-primary-fixed-dim text-xl">qr_code_scanner</span>
+              <span class="hidden sm:inline">Escanear</span>
+            </button>
+          </div>
         </div>
 
         <!-- Product Name -->
@@ -330,5 +378,12 @@ async function save() {
         </button>
       </form>
     </div>
+
+    <!-- Barcode Scanner Modal -->
+    <BarcodeScannerModal
+      :open="showScanner"
+      @close="showScanner = false"
+      @scan="onBarcodeScanned"
+    />
   </div>
 </template>

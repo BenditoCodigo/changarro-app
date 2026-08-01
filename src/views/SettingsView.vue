@@ -39,6 +39,14 @@ function toggleShifts() {
   settingsStore.setShiftsEnabled(!settingsStore.shiftsEnabled)
 }
 
+function toggleBarcodeScanner() {
+  settingsStore.setBarcodeScannerEnabled(!settingsStore.barcodeScannerEnabled)
+}
+
+function setDefaultTab(tab: 'catalog' | 'scanner') {
+  settingsStore.setDefaultHomeTab(tab)
+}
+
 // Backup & Restore state
 const showExportModal = ref(false)
 const showImportModal = ref(false)
@@ -261,6 +269,64 @@ function handleImport(event: Event) {
       <span class="text-[15px] text-on-surface-variant font-sans"
         >{{ Math.round(settingsStore.taxRate * 100) }}%</span
       >
+    </div>
+
+    <!-- MODO CAJERO Y ESCÁNER Section -->
+    <h2
+      class="uppercase tracking-wider text-[14px] font-semibold text-on-surface-variant font-display mt-8 mb-4"
+    >
+      Modo Cajero y Escáner
+    </h2>
+
+    <div class="flex justify-between items-center py-4 border-b border-outline-variant">
+      <div class="flex-1 pr-4">
+        <div class="text-[15px] text-on-surface font-sans">Escáner de código de barras</div>
+        <div class="text-[13px] text-on-surface-variant/60 font-sans mt-1 leading-relaxed">
+          Activa la pestaña de escáner en Inicio para cobrar como en caja de supermercado.
+        </div>
+      </div>
+      <!-- Toggle -->
+      <button
+        class="shrink-0 relative w-12 h-6 rounded-full transition-colors duration-200"
+        :class="settingsStore.barcodeScannerEnabled ? 'bg-primary-fixed-dim' : 'bg-surface-container-highest'"
+        aria-label="Habilitar escáner"
+        @click="toggleBarcodeScanner"
+      >
+        <span
+          class="absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-200"
+          :class="settingsStore.barcodeScannerEnabled ? 'translate-x-6' : 'translate-x-0.5'"
+        ></span>
+      </button>
+    </div>
+
+    <div
+      v-if="settingsStore.barcodeScannerEnabled"
+      class="flex justify-between items-center py-4 border-b border-outline-variant"
+    >
+      <div class="flex-1 pr-4">
+        <div class="text-[15px] text-on-surface font-sans">Pestaña inicial en Inicio</div>
+        <div class="text-[13px] text-on-surface-variant/60 font-sans mt-1 leading-relaxed">
+          Selecciona qué vista abre por defecto al entrar a la aplicación.
+        </div>
+      </div>
+      <div class="flex items-center gap-1 bg-surface-container-high p-1 rounded-full shrink-0">
+        <button
+          type="button"
+          class="px-3 py-1 text-xs font-medium rounded-full transition-colors"
+          :class="settingsStore.defaultHomeTab === 'catalog' ? 'bg-primary-container text-on-primary-container font-semibold' : 'text-on-surface-variant hover:text-on-surface'"
+          @click="setDefaultTab('catalog')"
+        >
+          Catálogo
+        </button>
+        <button
+          type="button"
+          class="px-3 py-1 text-xs font-medium rounded-full transition-colors"
+          :class="settingsStore.defaultHomeTab === 'scanner' ? 'bg-primary-container text-on-primary-container font-semibold' : 'text-on-surface-variant hover:text-on-surface'"
+          @click="setDefaultTab('scanner')"
+        >
+          Escáner
+        </button>
+      </div>
     </div>
 
     <!-- TURNOS Section -->

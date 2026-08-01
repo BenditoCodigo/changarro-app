@@ -161,6 +161,12 @@ desarrollo y el build.
 
 Los componentes reutilizables se organizan por dominio dentro de `components/`.
 
+### ui/
+
+Componentes de interfaz base y modales reutilizables:
+
+- **BarcodeScannerModal.vue**: Visor modal de escaneo de código de barras con transmisión de cámara en vivo, decodificación vía `BarcodeDetector`, linterna, respuestas hápticas/sonoras y entrada manual.
+
 ### layout/
 
 Componentes estructurales que definen el layout global:

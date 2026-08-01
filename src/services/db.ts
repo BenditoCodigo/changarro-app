@@ -6,6 +6,7 @@ export interface Product {
   price: number
   category: string
   unit: string
+  barcode?: string
   isActive: boolean
   createdAt: string
   updatedAt: string
@@ -55,6 +56,8 @@ export interface AppSettings {
   businessName: string
   currency: string
   shiftsEnabled: boolean
+  barcodeScannerEnabled?: boolean
+  defaultHomeTab?: 'catalog' | 'scanner'
 }
 
 export interface CartItemRecord {
@@ -84,6 +87,24 @@ db.version(4).stores({
 
 db.version(5).stores({
   products: 'id, name, category, isActive, createdAt',
+  productImages: 'productId',
+  sales: 'id, createdAt, shiftId',
+  settings: 'id',
+  cartItems: 'id, productId',
+  shifts: 'id, startedAt, closedAt',
+})
+
+db.version(6).stores({
+  products: 'id, name, category, barcode, isActive, createdAt',
+  productImages: 'productId',
+  sales: 'id, createdAt, shiftId',
+  settings: 'id',
+  cartItems: 'id, productId',
+  shifts: 'id, startedAt, closedAt',
+})
+
+db.version(7).stores({
+  products: 'id, name, category, barcode, isActive, createdAt',
   productImages: 'productId',
   sales: 'id, createdAt, shiftId',
   settings: 'id',
