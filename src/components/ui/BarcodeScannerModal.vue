@@ -248,7 +248,7 @@ onBeforeUnmount(() => {
         <div class="relative flex-1 bg-black flex items-center justify-center overflow-hidden">
           <video
             ref="videoRef"
-            class="w-full h-full object-cover"
+            class="w-full h-full object-cover scale-x-[-1]"
             playsinline
             muted
           ></video>

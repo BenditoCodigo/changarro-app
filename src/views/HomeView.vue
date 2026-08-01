@@ -546,12 +546,12 @@ async function toggleTorch() {
       <div
         class="relative w-full aspect-[4/3] max-h-[420px] bg-black rounded-3xl overflow-hidden border border-outline-variant shadow-2xl flex flex-col justify-center items-center"
       >
-        <!-- Camera Video Feed -->
+        <!-- Camera Video Feed (Mirrored for intuitive user experience) -->
         <video
           ref="scannerVideoRef"
           playsinline
           muted
-          class="w-full h-full object-cover"
+          class="w-full h-full object-cover scale-x-[-1]"
         ></video>
 
         <!-- Scanner Viewfinder Overlay with Light Frame Mask -->
