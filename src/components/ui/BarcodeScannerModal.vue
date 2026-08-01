@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, watch, nextTick, onBeforeUnmount } from 'vue'
 
 const props = defineProps<{
   open: boolean
@@ -68,18 +68,28 @@ async function startCamera() {
   errorMessage.value = null
   hasCameraPermission.value = null
 
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    hasCameraPermission.value = false
+    errorMessage.value = 'Tu navegador no soporta el acceso a la cámara. Por favor ingresa el código manualmente.'
+    return
+  }
+
   try {
-    const constraints: MediaStreamConstraints = {
-      video: {
-        facingMode: { ideal: 'environment' },
-        width: { ideal: 1280 },
-        height: { ideal: 720 },
-      },
+    // Attempt 1: Rear camera
+    try {
+      mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: 'environment' } },
+      })
+    } catch {
+      // Attempt 2: Any default camera (for desktop/webcam fallback)
+      mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+      })
     }
 
-    mediaStream = await navigator.mediaDevices.getUserMedia(constraints)
     hasCameraPermission.value = true
 
+    await nextTick()
     if (videoRef.value) {
       videoRef.value.srcObject = mediaStream
       await videoRef.value.play()
@@ -88,7 +98,7 @@ async function startCamera() {
   } catch (err) {
     console.error('Camera access error:', err)
     hasCameraPermission.value = false
-    errorMessage.value = 'No se pudo acceder a la cámara. Por favor permite el acceso o ingresa el código manualmente.'
+    errorMessage.value = 'No se pudo acceder a la cámara. Revisa los permisos de tu navegador o ingresa el código manualmente.'
   }
 }
 
@@ -179,11 +189,18 @@ function handleClose() {
   emit('close')
 }
 
-onMounted(() => {
-  if (props.open) {
-    startCamera()
-  }
-})
+watch(
+  () => props.open,
+  async (isOpen) => {
+    if (isOpen) {
+      await nextTick()
+      startCamera()
+    } else {
+      stopCamera()
+    }
+  },
+  { immediate: true },
+)
 
 onBeforeUnmount(() => {
   stopCamera()
