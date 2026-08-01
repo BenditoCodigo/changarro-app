@@ -154,9 +154,12 @@ function triggerHapticFeedback() {
 }
 
 // Continuous Camera Scanner logic
+const hasTorchSupport = ref(false)
+
 async function startContinuousCamera() {
   cameraError.value = null
   hasCameraPermission.value = null
+  hasTorchSupport.value = false
 
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
     hasCameraPermission.value = false
@@ -176,6 +179,14 @@ async function startContinuousCamera() {
     }
 
     hasCameraPermission.value = true
+
+    if (mediaStream) {
+      const track = mediaStream.getVideoTracks()[0]
+      if (track && typeof track.getCapabilities === 'function') {
+        const capabilities = track.getCapabilities() as { torch?: boolean }
+        hasTorchSupport.value = !!capabilities.torch
+      }
+    }
 
     await nextTick()
     if (scannerVideoRef.value) {
@@ -554,11 +565,12 @@ async function toggleTorch() {
           </span>
         </div>
 
-        <!-- Controls (Flashlight) -->
-        <div class="absolute top-4 right-4 z-10 flex gap-2">
+        <!-- Controls (Flashlight - Only visible if device supports torch LED) -->
+        <div v-if="hasTorchSupport" class="absolute top-4 right-4 z-10 flex gap-2">
           <button
             type="button"
             class="w-10 h-10 rounded-full bg-black/50 backdrop-blur-md text-white border border-white/20 flex items-center justify-center active:scale-95 transition-transform"
+            aria-label="Encender linterna"
             @click="toggleTorch"
           >
             <span class="material-symbols-outlined text-xl">

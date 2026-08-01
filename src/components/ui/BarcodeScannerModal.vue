@@ -16,6 +16,7 @@ const hasCameraPermission = ref<boolean | null>(null)
 const errorMessage = ref<string | null>(null)
 const manualBarcode = ref('')
 const isFlashlightOn = ref(false)
+const hasTorchSupport = ref(false)
 
 let mediaStream: MediaStream | null = null
 let scanTimer: number | null = null
@@ -88,6 +89,14 @@ async function startCamera() {
     }
 
     hasCameraPermission.value = true
+
+    if (mediaStream) {
+      const track = mediaStream.getVideoTracks()[0]
+      if (track && typeof track.getCapabilities === 'function') {
+        const capabilities = track.getCapabilities() as { torch?: boolean }
+        hasTorchSupport.value = !!capabilities.torch
+      }
+    }
 
     await nextTick()
     if (videoRef.value) {
@@ -283,11 +292,12 @@ onBeforeUnmount(() => {
             </button>
           </div>
 
-          <!-- Flashlight Toggle Floating Button -->
+          <!-- Flashlight Toggle Floating Button (Only visible if device hardware supports torch LED) -->
           <button
-            v-if="hasCameraPermission"
+            v-if="hasCameraPermission && hasTorchSupport"
             type="button"
             class="absolute bottom-4 right-4 w-12 h-12 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-white flex items-center justify-center active:scale-90 transition-transform"
+            aria-label="Encender linterna"
             @click="toggleTorch"
           >
             <span class="material-symbols-outlined text-xl">{{ isFlashlightOn ? 'flashlight_on' : 'flashlight_off' }}</span>
