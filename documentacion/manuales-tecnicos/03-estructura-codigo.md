@@ -174,10 +174,11 @@ Estos se renderizan en `App.vue` y están presentes en todas las vistas.
 
 ## Flujos de CI/CD y automatización (.github/ y scripts/)
 
-### .github/workflows/
+### .github/
 
-- **quality-pr.yml**: Pipeline liviano ejecutado en cada Pull Request hacia `main`. Valida linter (`npm run lint`), tipos (`npm run type-check`), pruebas unitarias (`npm run test:unit`) y compilación web (`npm run build`).
-- **build-android.yml**: Pipeline completo ejecutado al realizar `push` a la rama `main` o al crear etiquetas de versión (`v*`). Sincroniza con Capacitor, genera el archivo **AAB** para Google Play Store y el paquete **APK** firmado, y crea automáticamente una Release en GitHub al publicar etiquetas de versión.
+- **PULL_REQUEST_TEMPLATE.md**: Plantilla predeterminada que se autocompleta cuando un colaborador abre una Pull Request en GitHub.
+- **workflows/quality-pr.yml**: Pipeline liviano ejecutado en cada Pull Request hacia `main`. Valida linter (`npm run lint`), tipos (`npm run type-check`), pruebas unitarias (`npm run test:unit`) y compilación web (`npm run build`).
+- **workflows/build-android.yml**: Pipeline completo ejecutado al realizar `push` a la rama `main` o al crear etiquetas de versión (`v*`). Sincroniza con Capacitor, genera el archivo **AAB** para Google Play Store y el paquete **APK** firmado, y crea automáticamente una Release en GitHub al publicar etiquetas de versión.
 
 ### scripts/
 
