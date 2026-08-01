@@ -61,6 +61,8 @@ onMounted(async () => {
     } finally {
       isLoadingProduct.value = false
     }
+  } else if (route.query.barcode) {
+    barcode.value = String(route.query.barcode)
   }
 })
 
