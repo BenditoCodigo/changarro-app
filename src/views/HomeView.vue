@@ -561,7 +561,7 @@ async function toggleTorch() {
             <div class="absolute inset-x-0 h-0.5 bg-indigo-600 shadow-[0_0_10px_#4f46e5] animate-pulse top-1/2 -translate-y-1/2"></div>
           </div>
           <span class="mt-4 px-3.5 py-1.5 bg-slate-900/90 text-white backdrop-blur-md rounded-full text-xs font-semibold shadow-lg border border-slate-700/50">
-            Cámara activa · Cooldown de 2s
+            Cámara activa · Pausa de 2s entre escaneos
           </span>
         </div>
 
