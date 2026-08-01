@@ -21,7 +21,8 @@ src/
 │   └── index.ts           ← Definición de rutas
 ├── services/
 │   ├── db.ts              ← Capa de persistencia (Dexie.js)
-│   └── backup.ts          ← Servicio de respaldo e importación (combinación JSON)
+│   ├── backup.ts          ← Servicio de respaldo e importación (combinación JSON)
+│   └── reportsService.ts  ← Cálculo de KPIs, datos clave y exportador Excel (.xlsx)
 ├── stores/
 │   ├── products.ts        ← Catálogo de productos
 │   ├── cart.ts            ← Carrito de venta actual

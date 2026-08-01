@@ -67,7 +67,7 @@ Se accede desde el botón **Cobrar** en la pantalla del Carrito. Es una interfaz
 - **Cálculo de cambio**: se muestra en tiempo real el cambio a devolver (en verde) o la cantidad restante en caso de ser insuficiente (en rojo).
 - **Cobro seguro**: el botón de cobrar cuenta con un contador regresivo de 3 segundos antes de habilitarse para evitar confirmaciones accidentales. Al finalizar la venta, se muestra una animación festiva de fuegos artificiales verdes y el sistema te regresa inmediatamente a la pantalla de **Inicio** para atender al siguiente cliente.
 
-### Ventas (historial)
+### Ventas (historial y reportes)
 
 Aquí aparecen las ventas que has realizado, con filtros para encontrar fácilmente lo que buscas.
 
@@ -76,9 +76,22 @@ Aquí aparecen las ventas que has realizado, con filtros para encontrar fácilme
   - **Turno**: muestra solo las ventas del turno activo (visible únicamente si tienes turnos habilitados)
   - **Hoy**: muestra las ventas del día actual
   - **Mes**: muestra las ventas del mes actual; si tocas de nuevo el botón aparece un selector para elegir cualquier mes desde el primero con ventas registradas
-- **Menú de turno** (⋮, solo si turnos está habilitado):
-  - **Cerrar turno**: te lleva a la pantalla de cierre donde verás el resumen de caja
-  - **Historial de turnos**: ver todos los turnos registrados
+- **Menú de opciones** (tres puntos ⋮ en la esquina superior):
+  - **📊 Reporte del negocio**: abre la pantalla de resumen con tarjetas de datos clave, indicadores visuales de ventas y la opción de **Exportar a Excel (.xlsx)**
+  - **🔒 Cerrar turno** (si turnos está activo): te lleva a la pantalla de cierre donde verás el resumen de caja
+  - **📜 Historial de turnos** (si turnos está activo): ver todos los turnos registrados
+
+### Reporte del negocio (Reportes y Excel)
+
+Se accede desde el menú de opciones (⋮) en la pantalla de Ventas. Muestra un resumen visual de las cuentas de tu negocio sin tablas complejas:
+
+- **Filtro de período**: elige entre **Hoy**, **Esta Semana**, **Este Mes** o **Todo**.
+- **Tarjetas de datos clave (KPIs)**: consulta de un vistazo el Total Cobrado, Compras Atendidas, Ticket Promedio y la proporción de ventas en Efectivo vs. Tarjeta.
+- **Cuentas Claras del Negocio**: oraciones explicativas en lenguaje amigable que te informan tu **Producto Estrella**, tu **Día Más Fuerte** de la semana y tu **Hora Pico** con mayor flujo de clientes.
+- **Gráficas visuales simples**:
+  - *Tendencia de ventas*: barras verticales diarias destacando el día con más ventas con una estrella.
+  - *Top 5 productos*: barra de avance horizontal con los productos con mayor rotación.
+- **Botonera de exportación**: genera un archivo de Excel (`.xlsx`) con 3 pestañas (Resumen de Ventas, Detalle Completo de Ventas e Inventario) listo para descargar o compartir por WhatsApp.
 
 ### Ajustes
 

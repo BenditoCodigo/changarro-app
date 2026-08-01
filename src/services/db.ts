@@ -35,6 +35,7 @@ export interface Sale {
   total: number
   receivedAmount?: number
   changeAmount?: number
+  paymentMethod?: 'cash' | 'card' | 'transfer'
   shiftId?: number          // optional: assigned only when shifts are enabled
   createdAt: string
 }
