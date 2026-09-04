@@ -14,20 +14,20 @@ con tecnologías web empaquetadas en un shell nativo de Capacitor.
 ┌────────────────────────────────────────────────────┐
 │                   Frontend                         │
 │         Vue 3.5 + Vite 8 + Tailwind CSS 4          │
-│            SPA empaquetada en Capacitor 8           │
+│       Fuentes e Iconos autohospedados (Offline)    │
 ├────────────────────────────────────────────────────┤
-│                   Runtime nativo                   │
-│         Capacitor 8 (Android Studio / Gradle)      │
+│                   Runtime Nativo                   │
+│  Capacitor 8 (Android Studio / Electron macOS DMG) │
 ├────────────────────────────────────────────────────┤
 │                   Persistencia                     │
 │          IndexedDB vía Dexie.js (local)            │
-│  Datos: productos, imágenes, ventas, carrito...    │
+│  Datos: productos, ventas, carrito, métodos pago   │
 ├────────────────────────────────────────────────────┤
 │             Integración Continua (CI/CD)            │
-│         GitHub Actions (Quality PR & Main Build)   │
+│         GitHub Actions (Pipeline unificado)        │
 ├────────────────────────────────────────────────────┤
 │                   Plataformas                      │
-│                Android • Multiplataforma           │
+│             Android • macOS (.dmg) • Web           │
 └────────────────────────────────────────────────────┘
 ```
 
@@ -42,8 +42,9 @@ con tecnologías web empaquetadas en un shell nativo de Capacitor.
 | Estilos       | Tailwind CSS 4 (CSS-first con `@tailwindcss/vite`) | Utilidades CSS sin overhead, configuración en CSS puro |
 | Lenguaje      | TypeScript (strict mode)                           | Seguridad de tipos, mejor experiencia de desarrollo    |
 | Runtime Móvil | Capacitor 8                                        | Empaquetado oficial para Android (AAB / APK)           |
+| Runtime Mac   | Electron + `@capawesome/capacitor-electron`        | Empaquetado nativo macOS (.dmg)                        |
 | Persistencia  | IndexedDB vía Dexie.js                             | Persistencia local sin dependencias externas           |
-| CI / CD       | GitHub Actions                                     | Calidad automática en PRs y builds firmados en main    |
+| CI / CD       | GitHub Actions (`pipeline.yml`)                    | Pipeline unificado de calidad y compilaciones          |
 | Testing       | Vitest + happy-dom + fake-indexeddb                | Pruebas rápidas, integradas con Vite                   |
 
 ## Principios arquitectónicos

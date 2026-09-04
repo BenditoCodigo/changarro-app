@@ -10,9 +10,9 @@ Una caja registradora digital gratuita, hecha para tiendas de barrio,
 fondas, papelerías y cualquier negocio pequeño que quiera llevar el control
 de sus ventas sin depender de internet ni pagar suscripciones.
 
-[![Versión](https://img.shields.io/badge/versión-v0.11.beta-c5c5d8?style=flat-square&labelColor=20201f)](https://github.com/bendito-codigo/changarro-app/releases)
-[![Plataforma](https://img.shields.io/badge/plataforma-Android%20%7C%20Windows%20%26%20macOS%20(futuro)-4ade80?style=flat-square&labelColor=20201f)](https://github.com/bendito-codigo/changarro-app/releases)
-[![Sin internet](https://img.shields.io/badge/funciona-sin%20internet-c5c5d8?style=flat-square&labelColor=20201f)](#)
+[![Versión](https://img.shields.io/badge/versión-0.11.0-c5c5d8?style=flat-square&labelColor=20201f)](https://github.com/bendito-codigo/changarro-app/releases)
+[![Plataforma](https://img.shields.io/badge/plataforma-Android%20%7C%20macOS%20(.dmg)%20%7C%20Web-4ade80?style=flat-square&labelColor=20201f)](https://github.com/bendito-codigo/changarro-app/releases)
+[![Sin internet](https://img.shields.io/badge/funciona-100%25%20offline-c5c5d8?style=flat-square&labelColor=20201f)](#)
 [![Licencia](https://img.shields.io/badge/licencia-PolyForm%20NC-c5c5d8?style=flat-square&labelColor=20201f)](./LICENSE)
 [![Desarrollada con propósito por Bendito Código](https://img.shields.io/badge/desarrollada%20con%20propósito%20por-Bendito%20Código-c5c5d8?style=flat-square&labelColor=20201f)](https://benditocodigo.com)
 
@@ -28,7 +28,7 @@ Para ti, si:
 - 📓 Llevas el control en libreta o directamente en la memoria
 - 📵 No tienes internet estable o simplemente no quieres depender de él
 - 💸 No quieres pagar una suscripción mensual por un software caro y complicado
-- 🔒 Quieres que los datos de tu negocio se queden **en tu teléfono**, no en servidores de terceros
+- 🔒 Quieres que los datos de tu negocio se queden **en tu teléfono o computadora**, no en servidores de terceros
 
 ---
 
@@ -37,15 +37,17 @@ Para ti, si:
 | Función | Descripción |
 |---|---|
 | 🛒 **Registrar ventas** | Toca un producto y se agrega al carrito. Así de fácil |
-| ⚡ **Venta rápida** | Cobra algo sin registrarlo en el catálogo |
-| 💵 **Calcular cambio** | Ingresa lo que te da el cliente y listo |
-| 📷 **Escáner de código de barras** | Asigna códigos de barras a productos escaneando con la cámara |
-| 📦 **Gestionar productos** | Tu catálogo completo con precios, códigos y categorías |
-| 💰 **Historial de ventas** | Consulta tus ventas por turno, día o mes |
-| 🕐 **Turnos de caja** | Organiza las ventas por turno y genera resúmenes de caja |
-| 🧾 **IVA automático** | Actívalo cuando lo necesites |
-| 💾 **Respaldo de datos** | Exporta e importa todo en un archivo `.json` |
-| 📱 **Funciona offline** | Sin internet, sin nubes, sin suscripciones |
+| 💳 **Métodos de pago flexibles** | Acepta múltiples formas de pago para no perder ninguna venta: efectivo, tarjetas y transferencias |
+| 🎨 **Interfaz dinámica** | Experiencia fluida e intuitiva que se adapta automáticamente a tu dispositivo y flujo de trabajo |
+| ⚡ **Venta rápida** | Cobra un producto o servicio sin necesidad de registrarlo previamente en el catálogo |
+| 💵 **Calcular cambio** | Ingresa el efectivo recibido y calcula el cambio al instante |
+| 📷 **Escáner de código de barras** | Asigna y busca productos rápidamente usando la cámara de tu dispositivo |
+| 📦 **Gestionar productos** | Organiza tu catálogo completo con precios, códigos, unidades y categorías |
+| 💰 **Historial de ventas** | Consulta tus transacciones registradas por turno, día o mes |
+| 🕐 **Turnos de caja** | Control de ventas por turno con resúmenes claros para cierres de caja |
+| 💻 **Cobro rápido en escritorio** | Acceso directo al carrito mediante botón flotante en pantallas grandes |
+| 💾 **Respaldo de datos** | Guarda o restaura la información de tu negocio en un archivo con un solo clic |
+| 📵 **100% Offline** | Funciona sin conexión a internet ni servidores externos; tus datos jamás salen de tu dispositivo |
 
 ---
 
@@ -67,13 +69,11 @@ Para ti, si:
 
 ## 📲 Descarga
 
-> **La primera versión pública está en camino.** Mientras tanto puedes compilar la app tú mismo siguiendo la guía de abajo.
+Encuentra los paquetes e instaladores ejecutables en la sección de [**Releases**](https://github.com/bendito-codigo/changarro-app/releases):
 
-Cuando esté disponible, la encontrarás en la sección de [**Releases**](https://github.com/bendito-codigo/changarro-app/releases) de este repositorio:
-
-- 📱 **Android** — archivo `.apk` listo para instalar (Plataforma activa)
-- 🍎 **macOS** — instalador `.dmg` (Plataforma activa)
-- 🖥️ **Windows** — instalador `.exe` (Próximamente / En planes)
+- 📱 **Android** — archivo `.apk` o `.aab` listo para instalar (Plataforma nativa activa)
+- 🍎 **macOS** — instalador `.dmg` ejecutable empaquetado con Electron (Plataforma nativa activa)
+- 🌐 **Web (SPA / PWA)** — ejecutable offline instalable en cualquier navegador o dispositivo
 
 ---
 
@@ -93,8 +93,9 @@ Cuando esté disponible, la encontrarás en la sección de [**Releases**](https:
 git clone https://github.com/bendito-codigo/changarro-app.git
 cd changarro-app
 
-# 2. Instala las dependencias
+# 2. Instala las dependencias de la raíz y de electron
 npm install
+cd electron && npm install && cd ..
 
 # 3. Inicia el modo de desarrollo (versión web)
 npm run dev
@@ -102,7 +103,16 @@ npm run dev
 
 Abre tu navegador en `http://localhost:5173` y ya puedes usar Changarro.
 
-Para compilar el APK de Android, consulta la [guía de entorno de desarrollo](./documentacion/manuales-tecnicos/02-entorno-desarrollo.md).
+**Compilar paquetes nativos:**
+```bash
+# Compilar ejecutable macOS (.dmg)
+npm run build:dmg
+
+# Compilar paquete APK de Android
+npm run build:apk:release
+```
+
+Para más detalles, consulta la [guía de entorno de desarrollo](./documentacion/manuales-tecnicos/02-entorno-desarrollo.md).
 
 ---
 
@@ -129,7 +139,7 @@ Changarro está diseñado con un principio claro:
 - ❌ No hay telemetría ni analytics
 - ❌ No necesita cuenta ni correo electrónico
 - ✅ Todo se guarda en tu dispositivo
-- ✅ Puedes exportar todo en cualquier momento con un solo botón
+- ✅ Puedes exportar e importar todo en cualquier momento con un solo botón
 
 ---
 
@@ -156,6 +166,7 @@ Lo que sí puedes hacer:
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-06b6d4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![Capacitor](https://img.shields.io/badge/Capacitor-8-119eff?style=flat-square&logo=capacitor&logoColor=white)](https://capacitorjs.com)
+[![Electron](https://img.shields.io/badge/Electron-43-47848F?style=flat-square&logo=electron&logoColor=white)](https://www.electronjs.org)
 [![Dexie.js](https://img.shields.io/badge/Dexie.js-IndexedDB-f97316?style=flat-square)](https://dexie.org)
 
 </div>
