@@ -114,6 +114,13 @@ npm run build:dmg
 
 El instalador `.dmg` generado estará disponible en la carpeta `electron/dist/`.
 
+#### Generación de Íconos
+Para generar los íconos de macOS (`icon.icns` y `icon.png` 1024x1024) a partir de una imagen PNG:
+
+```bash
+python3 scripts/generate-icons-macos.py path/to/icon-1024x1024.png
+```
+
 ---
 
 ## Integración Continua (CI/CD con GitHub Actions)
