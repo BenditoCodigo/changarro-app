@@ -80,5 +80,18 @@ describe('Settings Store - Scanner & Cashier Mode', () => {
       // Cash should remain enabled
       expect(store.paymentMethods.cash).toBe(true)
     })
+
+    it('setTransferClabe saves and persists CLABE number', async () => {
+      const store = useSettingsStore()
+      await store.loadSettings()
+
+      expect(store.transferClabe).toBe('')
+
+      await store.setTransferClabe(' 123456789012345678 ')
+      expect(store.transferClabe).toBe('123456789012345678')
+
+      const fromDb = await db.settings.get('app-settings')
+      expect(fromDb?.transferClabe).toBe('123456789012345678')
+    })
   })
 })

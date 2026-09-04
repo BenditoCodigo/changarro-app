@@ -31,6 +31,24 @@ function cancelEditName() {
   isEditingName.value = false
 }
 
+// Editable CLABE
+const isEditingClabe = ref(false)
+const editingClabe = ref('')
+
+function startEditingClabe() {
+  editingClabe.value = settingsStore.transferClabe
+  isEditingClabe.value = true
+}
+
+function saveClabe() {
+  settingsStore.setTransferClabe(editingClabe.value)
+  isEditingClabe.value = false
+}
+
+function cancelEditClabe() {
+  isEditingClabe.value = false
+}
+
 function toggleTax() {
   settingsStore.setTaxEnabled(!settingsStore.taxEnabled)
 }
@@ -371,6 +389,57 @@ function handleImport(event: Event) {
         ></span>
       </button>
     </div>
+
+    <!-- CLABE field (only when transfer is enabled) -->
+    <Transition name="fade-up">
+      <div
+        v-if="settingsStore.paymentMethods.transfer"
+        class="py-3 px-4 bg-surface-container border-b border-outline-variant/60 rounded-b-2xl mb-2"
+      >
+        <div class="flex items-center justify-between gap-3">
+          <div class="flex-1 min-w-0">
+            <div class="text-[13px] font-semibold text-on-surface-variant font-display mb-0.5">
+              CLABE o Número de Cuenta
+            </div>
+            <!-- Editing mode -->
+            <div v-if="isEditingClabe" class="flex items-center gap-2 mt-1">
+              <input
+                v-model="editingClabe"
+                type="text"
+                placeholder="Ej. 123456789012345678"
+                class="w-full max-w-xs bg-surface-container-low border border-outline-variant rounded-full px-4 py-1.5 text-[14px] font-mono text-on-surface focus:ring-2 focus:ring-primary-fixed-dim focus:border-transparent outline-none"
+                @keyup.enter="saveClabe"
+                @keyup.escape="cancelEditClabe"
+                autofocus
+              />
+              <button
+                class="flex items-center justify-center w-8 h-8 rounded-full bg-primary-container text-on-primary-container active:scale-95 shrink-0"
+                aria-label="Guardar CLABE"
+                @click="saveClabe"
+              >
+                <span class="material-symbols-outlined text-[16px]">check</span>
+              </button>
+              <button
+                class="flex items-center justify-center w-8 h-8 rounded-full hover:bg-surface-variant text-on-surface-variant active:scale-95 shrink-0"
+                aria-label="Cancelar edición de CLABE"
+                @click="cancelEditClabe"
+              >
+                <span class="material-symbols-outlined text-[16px]">close</span>
+              </button>
+            </div>
+            <!-- Display mode -->
+            <button
+              v-else
+              class="flex items-center gap-2 text-[14px] font-mono font-medium text-surface-tint hover:text-on-surface transition-colors"
+              @click="startEditingClabe"
+            >
+              <span>{{ settingsStore.transferClabe || 'Agregar CLABE...' }}</span>
+              <span class="material-symbols-outlined text-[15px]">edit</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </Transition>
 
     <!-- MODO CAJERO Y ESCÁNER Section -->
     <h2

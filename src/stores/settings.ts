@@ -29,6 +29,7 @@ export const useSettingsStore = defineStore('settings', () => {
   const barcodeScannerEnabled = ref(DEFAULT_SETTINGS.barcodeScannerEnabled ?? true)
   const defaultHomeTab = ref<'catalog' | 'scanner'>(DEFAULT_SETTINGS.defaultHomeTab ?? 'catalog')
   const paymentMethods = ref<PaymentMethodsConfig>({ ...DEFAULT_PAYMENT_METHODS })
+  const transferClabe = ref(DEFAULT_SETTINGS.transferClabe ?? '')
   const isLoaded = ref(false)
 
   async function loadSettings() {
@@ -44,6 +45,7 @@ export const useSettingsStore = defineStore('settings', () => {
       paymentMethods.value = stored.paymentMethods
         ? { ...DEFAULT_PAYMENT_METHODS, ...stored.paymentMethods }
         : { ...DEFAULT_PAYMENT_METHODS }
+      transferClabe.value = stored.transferClabe ?? ''
     } else {
       await db.settings.put(DEFAULT_SETTINGS)
     }
@@ -72,6 +74,11 @@ export const useSettingsStore = defineStore('settings', () => {
 
   async function setDefaultHomeTab(value: 'catalog' | 'scanner') {
     defaultHomeTab.value = value
+    await persist()
+  }
+
+  async function setTransferClabe(value: string) {
+    transferClabe.value = value.trim()
     await persist()
   }
 
@@ -126,6 +133,7 @@ export const useSettingsStore = defineStore('settings', () => {
       barcodeScannerEnabled: barcodeScannerEnabled.value,
       defaultHomeTab: defaultHomeTab.value,
       paymentMethods: { ...paymentMethods.value },
+      transferClabe: transferClabe.value,
     })
   }
 
@@ -138,6 +146,7 @@ export const useSettingsStore = defineStore('settings', () => {
     barcodeScannerEnabled,
     defaultHomeTab,
     paymentMethods,
+    transferClabe,
     isLoaded,
     loadSettings,
     setTaxEnabled,
@@ -147,5 +156,6 @@ export const useSettingsStore = defineStore('settings', () => {
     setBarcodeScannerEnabled,
     setDefaultHomeTab,
     setPaymentMethodEnabled,
+    setTransferClabe,
   }
 })

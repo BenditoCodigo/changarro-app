@@ -66,6 +66,7 @@ export interface AppSettings {
   barcodeScannerEnabled?: boolean
   defaultHomeTab?: 'catalog' | 'scanner'
   paymentMethods?: PaymentMethodsConfig
+  transferClabe?: string
 }
 
 export interface CartItemRecord {

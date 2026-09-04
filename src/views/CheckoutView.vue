@@ -113,14 +113,39 @@ function formatPrice(price: number): string {
   return price.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
+const clabeCopied = ref(false)
+
+async function copyClabe() {
+  if (!settingsStore.transferClabe) return
+  try {
+    await navigator.clipboard.writeText(settingsStore.transferClabe)
+    clabeCopied.value = true
+    setTimeout(() => {
+      clabeCopied.value = false
+    }, 2000)
+  } catch (err) {
+    console.error('Error al copiar CLABE:', err)
+  }
+}
+
 const isButtonDisabled = computed(() => {
   return !isValid.value || countdown.value > 0 || isSubmitting.value
 })
 
 const buttonText = computed(() => {
-  if (isSubmitting.value) return 'Cobrando...'
-  if (countdown.value > 0) return `Cobrar (${countdown.value})`
-  return 'Cobrar'
+  if (isSubmitting.value) {
+    if (selectedPaymentMethod.value === 'transfer') return 'Procesando...'
+    return 'Cobrando...'
+  }
+  const baseLabel =
+    selectedPaymentMethod.value === 'card'
+      ? 'Cobrado'
+      : selectedPaymentMethod.value === 'transfer'
+        ? 'Recibida'
+        : 'Cobrar'
+
+  if (countdown.value > 0) return `${baseLabel} (${countdown.value})`
+  return baseLabel
 })
 
 async function handleConfirmSale() {
@@ -307,27 +332,78 @@ async function handleConfirmSale() {
       </div>
     </section>
 
-    <!-- Card or Transfer Information Card -->
+    <!-- Card Information Card -->
     <section
-      v-else
+      v-else-if="selectedPaymentMethod === 'card'"
       class="bg-surface-container border border-outline-variant rounded-[2rem] p-8 mb-6 text-center"
     >
       <div class="flex justify-center mb-4">
         <div
           class="flex items-center justify-center w-16 h-16 rounded-full bg-primary-container/20 text-surface-tint"
         >
-          <span class="material-symbols-outlined text-[32px]">
-            {{ selectedPaymentMethod === 'card' ? 'credit_card' : 'account_balance' }}
-          </span>
+          <span class="material-symbols-outlined text-[32px]">credit_card</span>
         </div>
       </div>
       <h2 class="text-[19px] font-bold font-display text-on-surface mb-2">
-        Pago con {{ selectedPaymentMethod === 'card' ? 'Tarjeta' : 'Transferencia' }}
+        Pago con Tarjeta
       </h2>
       <p class="text-[14px] text-on-surface-variant font-sans max-w-sm mx-auto">
-        Procesa el cobro en la terminal o verifica la transferencia en tu banco por el monto exacto de
+        Procesa el cobro en tu terminal bancaria por el monto exacto de
         <strong class="text-on-surface">${{ formatPrice(total) }}</strong>.
       </p>
+    </section>
+
+    <!-- Transfer Information Card -->
+    <section
+      v-else-if="selectedPaymentMethod === 'transfer'"
+      class="bg-surface-container border border-outline-variant rounded-[2rem] p-8 mb-6 text-center"
+    >
+      <div class="flex justify-center mb-4">
+        <div
+          class="flex items-center justify-center w-16 h-16 rounded-full bg-primary-container/20 text-surface-tint"
+        >
+          <span class="material-symbols-outlined text-[32px]">account_balance</span>
+        </div>
+      </div>
+      <h2 class="text-[19px] font-bold font-display text-on-surface mb-2">
+        Pago con Transferencia
+      </h2>
+      <p class="text-[14px] text-on-surface-variant font-sans max-w-sm mx-auto mb-6">
+        Verifica la transferencia en tu banco por el monto exacto de
+        <strong class="text-on-surface">${{ formatPrice(total) }}</strong>.
+      </p>
+
+      <!-- Prominent CLABE Display -->
+      <div
+        v-if="settingsStore.transferClabe"
+        class="bg-surface-container-low border border-primary-fixed-dim/40 rounded-2xl p-5 text-left flex items-center justify-between gap-4"
+      >
+        <div class="min-w-0 flex-1">
+          <p class="text-[12px] uppercase tracking-wider font-semibold text-on-surface-variant font-display mb-1">
+            CLABE Interbancaria
+          </p>
+          <p class="text-[20px] font-bold font-mono text-surface-tint tracking-widest break-all select-all">
+            {{ settingsStore.transferClabe }}
+          </p>
+        </div>
+        <button
+          class="shrink-0 flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-surface-container-high border border-outline-variant hover:border-surface-tint text-on-surface text-[13px] font-semibold transition-all active:scale-95"
+          @click="copyClabe"
+        >
+          <span class="material-symbols-outlined text-[16px]">
+            {{ clabeCopied ? 'check' : 'content_copy' }}
+          </span>
+          <span>{{ clabeCopied ? 'Copiada' : 'Copiar' }}</span>
+        </button>
+      </div>
+
+      <!-- No CLABE configured notice -->
+      <div
+        v-else
+        class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/50 text-[13px] text-on-surface-variant/70 font-sans"
+      >
+        Puedes agregar tu CLABE interbancaria en Ajustes para mostrarla aquí durante tus cobros.
+      </div>
     </section>
 
     <!-- Bottom Action Button -->
