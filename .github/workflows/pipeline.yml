@@ -1,0 +1,209 @@
+name: Pipeline CI/CD
+
+on:
+  pull_request:
+    branches:
+      - main
+      - dev
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  quality:
+    name: Calidad de Código
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js (v22)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Linter (Oxlint & ESLint)
+        run: npm run lint
+
+      - name: Verificación de tipos (vue-tsc)
+        run: npm run type-check
+
+      - name: Pruebas unitarias (Vitest)
+        run: npm run test:unit -- --run
+
+      - name: Validar compilación del frontend (Vite build)
+        run: npm run build
+
+  build-android:
+    name: Compilación Android (AAB & APK)
+    needs: quality
+    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    environment: prod
+    env:
+      KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+      KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+      KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+      KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js (v22)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Configurar Java 21 (Requerido por Capacitor 6+)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '21'
+
+      - name: Configurar Android SDK
+        uses: android-actions/setup-android@v4
+
+      - name: Instalar dependencias de Node
+        run: npm ci
+
+      - name: Compilar frontend web y sincronizar con Capacitor
+        run: npm run cap:sync
+
+      - name: Asignar permisos de ejecución a Gradle
+        run: chmod +x android/gradlew
+
+      - name: Compilar Android App Bundle (.aab) con Gradle
+        run: |
+          cd android
+          ./gradlew bundleRelease
+
+      - name: Compilar APK Release (.apk) con Gradle
+        run: |
+          cd android
+          ./gradlew assembleRelease
+
+      - name: Preparar carpeta de salida de artefactos
+        run: mkdir -p build-output-android
+
+      - name: Firmar artefactos AAB y APK (si existen secretos en GitHub)
+        if: ${{ env.KEYSTORE_BASE64 != '' }}
+        run: |
+          # 1. Decodificar el Keystore
+          echo "${{ env.KEYSTORE_BASE64 }}" | base64 -d > release.keystore
+
+          # 2. Firmar el archivo .aab usando jarsigner (Java JDK)
+          AAB_PATH=$(find android/app/build/outputs/bundle/release -name "*.aab" | head -n 1)
+          if [ -n "$AAB_PATH" ]; then
+            jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
+              -keystore release.keystore \
+              -storepass "${{ env.KEYSTORE_PASSWORD }}" \
+              -keypass "${{ env.KEY_PASSWORD }}" \
+              "$AAB_PATH" \
+              "${{ env.KEY_ALIAS }}"
+            cp "$AAB_PATH" build-output-android/changarro-release.aab
+          fi
+
+          # 3. Firmar el archivo .apk usando apksigner (Android SDK)
+          APK_PATH=$(find android/app/build/outputs/apk/release -name "*.apk" | head -n 1)
+          if [ -n "$APK_PATH" ]; then
+            BUILD_TOOLS=$(ls -d $ANDROID_HOME/build-tools/* | sort -V | tail -n 1)
+            $BUILD_TOOLS/zipalign -f 4 "$APK_PATH" build-output-android/changarro-aligned.apk
+            $BUILD_TOOLS/apksigner sign \
+              --ks release.keystore \
+              --ks-pass "pass:${{ env.KEYSTORE_PASSWORD }}" \
+              --key-pass "pass:${{ env.KEY_PASSWORD }}" \
+              --ks-key-alias "${{ env.KEY_ALIAS }}" \
+              --out build-output-android/changarro-release.apk \
+              build-output-android/changarro-aligned.apk
+            rm -f build-output-android/changarro-aligned.apk
+          fi
+
+          # 4. Eliminar el Keystore temporal por seguridad
+          rm -f release.keystore
+
+      - name: Copiar paquetes sin firmar (fallback si no hay secretos)
+        if: ${{ env.KEYSTORE_BASE64 == '' }}
+        run: |
+          cp android/app/build/outputs/bundle/release/*.aab build-output-android/ || true
+          cp android/app/build/outputs/apk/release/*.apk build-output-android/ || true
+
+      - name: Subir artefactos Android a GitHub Actions
+        uses: actions/upload-artifact@v4
+        with:
+          name: changarro-android-builds
+          path: build-output-android/
+
+  build-macos:
+    name: Compilación macOS (DMG)
+    needs: quality
+    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js (v22)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Instalar dependencias de Node (raíz y electron)
+        run: |
+          npm ci
+          cd electron && npm ci
+
+      - name: Compilar frontend y sincronizar con Capacitor Electron
+        run: npm run cap:electron:sync
+
+      - name: Compilar paquete DMG con Electron Builder
+        run: |
+          cd electron
+          npm run pack
+
+      - name: Preparar carpeta de salida de artefactos
+        run: |
+          mkdir -p build-output-macos
+          cp electron/dist/*.dmg build-output-macos/ 2>/dev/null || true
+
+      - name: Subir artefactos macOS a GitHub Actions
+        uses: actions/upload-artifact@v4
+        with:
+          name: changarro-macos-dmg
+          path: build-output-macos/
+
+  publish-release:
+    name: Publicar GitHub Release
+    needs: [build-android, build-macos]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar artefactos Android
+        uses: actions/download-artifact@v4
+        with:
+          name: changarro-android-builds
+          path: release-assets/
+
+      - name: Descargar artefactos macOS
+        uses: actions/download-artifact@v4
+        with:
+          name: changarro-macos-dmg
+          path: release-assets/
+
+      - name: Crear GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release-assets/*
+          draft: false
+          prerelease: false
+          generate_release_notes: true
