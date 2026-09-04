@@ -10,11 +10,12 @@ describe('Settings Store - Scanner & Cashier Mode', () => {
     await db.settings.clear()
   })
 
-  it('initializes with default barcodeScannerEnabled=true and defaultHomeTab=catalog', async () => {
+  it('initializes with default barcodeScannerEnabled=false, taxEnabled=false, and defaultHomeTab=catalog', async () => {
     const store = useSettingsStore()
     await store.loadSettings()
 
-    expect(store.barcodeScannerEnabled).toBe(true)
+    expect(store.barcodeScannerEnabled).toBe(false)
+    expect(store.taxEnabled).toBe(false)
     expect(store.defaultHomeTab).toBe('catalog')
   })
 
@@ -22,11 +23,22 @@ describe('Settings Store - Scanner & Cashier Mode', () => {
     const store = useSettingsStore()
     await store.loadSettings()
 
-    await store.setBarcodeScannerEnabled(false)
-    expect(store.barcodeScannerEnabled).toBe(false)
+    await store.setBarcodeScannerEnabled(true)
+    expect(store.barcodeScannerEnabled).toBe(true)
 
     const fromDb = await db.settings.get('app-settings')
-    expect(fromDb?.barcodeScannerEnabled).toBe(false)
+    expect(fromDb?.barcodeScannerEnabled).toBe(true)
+  })
+
+  it('setTaxRate updates tax rate percentage and persists to IndexedDB', async () => {
+    const store = useSettingsStore()
+    await store.loadSettings()
+
+    await store.setTaxRate(0.08)
+    expect(store.taxRate).toBe(0.08)
+
+    const fromDb = await db.settings.get('app-settings')
+    expect(fromDb?.taxRate).toBe(0.08)
   })
 
   it('setDefaultHomeTab updates default tab and persists to IndexedDB', async () => {

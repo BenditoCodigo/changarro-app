@@ -10,12 +10,12 @@ const DEFAULT_PAYMENT_METHODS: PaymentMethodsConfig = {
 
 const DEFAULT_SETTINGS: AppSettings = {
   id: 'app-settings',
-  taxEnabled: true,
+  taxEnabled: false,
   taxRate: 0.16,
   businessName: 'Mi Changarro',
   currency: 'MXN',
   shiftsEnabled: false,
-  barcodeScannerEnabled: true,
+  barcodeScannerEnabled: false,
   defaultHomeTab: 'catalog',
   paymentMethods: DEFAULT_PAYMENT_METHODS,
 }
@@ -26,7 +26,7 @@ export const useSettingsStore = defineStore('settings', () => {
   const businessName = ref(DEFAULT_SETTINGS.businessName)
   const currency = ref(DEFAULT_SETTINGS.currency)
   const shiftsEnabled = ref(DEFAULT_SETTINGS.shiftsEnabled)
-  const barcodeScannerEnabled = ref(DEFAULT_SETTINGS.barcodeScannerEnabled ?? true)
+  const barcodeScannerEnabled = ref(DEFAULT_SETTINGS.barcodeScannerEnabled)
   const defaultHomeTab = ref<'catalog' | 'scanner'>(DEFAULT_SETTINGS.defaultHomeTab ?? 'catalog')
   const paymentMethods = ref<PaymentMethodsConfig>({ ...DEFAULT_PAYMENT_METHODS })
   const transferClabe = ref(DEFAULT_SETTINGS.transferClabe ?? '')
@@ -35,12 +35,12 @@ export const useSettingsStore = defineStore('settings', () => {
   async function loadSettings() {
     const stored = await db.settings.get('app-settings')
     if (stored) {
-      taxEnabled.value = stored.taxEnabled
-      taxRate.value = stored.taxRate
+      taxEnabled.value = stored.taxEnabled ?? false
+      taxRate.value = stored.taxRate ?? 0.16
       businessName.value = stored.businessName
       currency.value = stored.currency
       shiftsEnabled.value = stored.shiftsEnabled ?? false
-      barcodeScannerEnabled.value = stored.barcodeScannerEnabled ?? true
+      barcodeScannerEnabled.value = stored.barcodeScannerEnabled ?? false
       defaultHomeTab.value = stored.defaultHomeTab ?? 'catalog'
       paymentMethods.value = stored.paymentMethods
         ? { ...DEFAULT_PAYMENT_METHODS, ...stored.paymentMethods }

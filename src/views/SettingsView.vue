@@ -49,6 +49,27 @@ function cancelEditClabe() {
   isEditingClabe.value = false
 }
 
+// Editable tax rate
+const isEditingTaxRate = ref(false)
+const editingTaxRate = ref('')
+
+function startEditingTaxRate() {
+  editingTaxRate.value = Math.round(settingsStore.taxRate * 100).toString()
+  isEditingTaxRate.value = true
+}
+
+function saveTaxRate() {
+  const parsed = parseFloat(editingTaxRate.value)
+  if (!isNaN(parsed) && parsed >= 0 && parsed <= 100) {
+    settingsStore.setTaxRate(parsed / 100)
+  }
+  isEditingTaxRate.value = false
+}
+
+function cancelEditTaxRate() {
+  isEditingTaxRate.value = false
+}
+
 function toggleTax() {
   settingsStore.setTaxEnabled(!settingsStore.taxEnabled)
 }
@@ -297,10 +318,49 @@ function handleImport(event: Event) {
     </div>
 
     <div class="flex justify-between items-center py-4 border-b border-outline-variant">
-      <span class="text-[15px] text-on-surface font-sans">Porcentaje</span>
-      <span class="text-[15px] text-on-surface-variant font-sans"
-        >{{ Math.round(settingsStore.taxRate * 100) }}%</span
+      <span class="text-[15px] text-on-surface font-sans">Porcentaje de IVA</span>
+
+      <!-- Editing mode -->
+      <div v-if="isEditingTaxRate" class="flex items-center gap-2">
+        <div class="relative flex items-center">
+          <input
+            v-model="editingTaxRate"
+            type="number"
+            min="0"
+            max="100"
+            step="any"
+            class="w-24 bg-surface-container-low border border-outline-variant rounded-full pl-4 pr-7 py-1.5 text-[14px] font-semibold text-on-surface focus:ring-2 focus:ring-primary-fixed-dim focus:border-transparent outline-none"
+            @keyup.enter="saveTaxRate"
+            @keyup.escape="cancelEditTaxRate"
+            autofocus
+          />
+          <span class="absolute right-3 text-[14px] text-on-surface-variant font-bold">%</span>
+        </div>
+        <button
+          class="flex items-center justify-center w-8 h-8 rounded-full bg-primary-container text-on-primary-container active:scale-95 shrink-0"
+          aria-label="Guardar porcentaje de IVA"
+          @click="saveTaxRate"
+        >
+          <span class="material-symbols-outlined text-[16px]">check</span>
+        </button>
+        <button
+          class="flex items-center justify-center w-8 h-8 rounded-full hover:bg-surface-variant text-on-surface-variant active:scale-95 shrink-0"
+          aria-label="Cancelar edición de IVA"
+          @click="cancelEditTaxRate"
+        >
+          <span class="material-symbols-outlined text-[16px]">close</span>
+        </button>
+      </div>
+
+      <!-- Display mode -->
+      <button
+        v-else
+        class="flex items-center gap-2 text-[15px] text-on-surface-variant font-sans hover:text-on-surface transition-colors"
+        @click="startEditingTaxRate"
       >
+        <span>{{ Math.round(settingsStore.taxRate * 100) }}%</span>
+        <span class="material-symbols-outlined text-[15px]">edit</span>
+      </button>
     </div>
 
     <!-- MÉTODOS DE PAGO Section -->
