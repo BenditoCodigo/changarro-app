@@ -7,18 +7,17 @@ técnicas detrás de su diseño.
 
 ## Vista general
 
-Changarro es una aplicación multiplataforma (Android, Windows, macOS) construida
-con tecnologías web empaquetadas en un shell nativo.
+Changarro es una aplicación multiplataforma construida
+con tecnologías web empaquetadas en un shell nativo de Capacitor.
 
 ```
 ┌────────────────────────────────────────────────────┐
 │                   Frontend                         │
 │         Vue 3.5 + Vite 8 + Tailwind CSS 4          │
-│     SPA empaquetada en Capacitor 8 / Tauri 2        │
+│            SPA empaquetada en Capacitor 8           │
 ├────────────────────────────────────────────────────┤
 │                   Runtime nativo                   │
 │         Capacitor 8 (Android Studio / Gradle)      │
-│         Tauri 2 (Rust backend - macOS / Windows)   │
 ├────────────────────────────────────────────────────┤
 │                   Persistencia                     │
 │          IndexedDB vía Dexie.js (local)            │
@@ -28,7 +27,7 @@ con tecnologías web empaquetadas en un shell nativo.
 │         GitHub Actions (Quality PR & Main Build)   │
 ├────────────────────────────────────────────────────┤
 │                   Plataformas                      │
-│          Android • Windows • macOS                 │
+│                Android • Multiplataforma           │
 └────────────────────────────────────────────────────┘
 ```
 
@@ -43,7 +42,6 @@ con tecnologías web empaquetadas en un shell nativo.
 | Estilos       | Tailwind CSS 4 (CSS-first con `@tailwindcss/vite`) | Utilidades CSS sin overhead, configuración en CSS puro |
 | Lenguaje      | TypeScript (strict mode)                           | Seguridad de tipos, mejor experiencia de desarrollo    |
 | Runtime Móvil | Capacitor 8                                        | Empaquetado oficial para Android (AAB / APK)           |
-| Shell Escritorio| Tauri 2                                          | Binarios ligeros para macOS y Windows (Rust)           |
 | Persistencia  | IndexedDB vía Dexie.js                             | Persistencia local sin dependencias externas           |
 | CI / CD       | GitHub Actions                                     | Calidad automática en PRs y builds firmados en main    |
 | Testing       | Vitest + happy-dom + fake-indexeddb                | Pruebas rápidas, integradas con Vite                   |
@@ -71,16 +69,14 @@ Los componentes Vue consumen stores de Pinia. Los stores delegan la persistencia
 a la capa de servicios (Dexie.js). Esto permite cambiar el motor de almacenamiento
 sin tocar la lógica de negocio ni las vistas.
 
-### Multiplataforma sin compromisos
+### Multiplataforma nativa con Capacitor
 
-Gracias a Tauri 2, el mismo código genera:
+Gracias a Capacitor 8, el mismo código frontend se integra fluidamente con las capacidades nativas del dispositivo:
 
-- APK para Android
-- Instalador .exe para Windows
-- .dmg para macOS
+- APK / AAB para Android
+- Integración nativa con Plugins de Capacitor (Filesystem, Share, etc.)
 
-El frontend es idéntico en todas las plataformas. Las diferencias de plataforma
-se manejan en la capa de Tauri (Rust).
+El frontend es idéntico en todas las plataformas. Las APIs nativas se consumen a través de plugins de Capacitor.
 
 ---
 
@@ -200,7 +196,7 @@ interface CartItemRecord {
 - **Los turnos se persisten** en la tabla `shifts`; el turno activo se carga al arrancar si `shiftsEnabled` es `true`
 - **Las ventas referencian al turno** mediante `shiftId` (campo opcional); las ventas sin turno son completamente válidas
 - No se usa localStorage ni sessionStorage
-- Eventual: migración a SQLite vía Tauri para mejor rendimiento con datasets grandes
+- Eventual: migración a SQLite vía Capacitor para mejor rendimiento con datasets grandes
 
 ---
 
@@ -233,8 +229,7 @@ changarro-app/
 │       └── build-android.yml  ← CI/CD de compilación AAB/APK y Release para main
 ├── android/                   ← Proyecto nativo Android (Capacitor)
 ├── documentacion/             ← Documentación técnica y de usuario
-├── scripts/                   ← Scripts auxiliares (build-apk-capacitor.sh, etc.)
-├── src-tauri/                 ← Shell nativo para escritorio (Rust + Tauri 2)
+├── scripts/                   ← Scripts auxiliares (build-apk.sh, clean-builds.sh, etc.)
 └── src/                       ← Frontend (Vue 3 + Tailwind 4)
     ├── assets/
     │   └── main.css           ← Tailwind + design tokens + @utility

@@ -10,24 +10,17 @@ Este documento explica cómo preparar tu máquina para trabajar en Changarro.
 
 | Herramienta | Versión mínima | Para qué                            |
 | ----------- | -------------- | ----------------------------------- |
-| Node.js     | 20+            | Ejecutar el frontend en desarrollo  |
+| Node.js     | 22+            | Ejecutar el frontend en desarrollo  |
 | npm         | 10+            | Gestionar dependencias del frontend |
-| Rust        | 1.77+          | Compilar el shell nativo de Tauri   |
+| Java        | 21 (JDK)       | Requerido por Gradle y Capacitor 8  |
 | Git         | 2.x            | Control de versiones                |
 
-### Para desarrollo Android (opcional)
+### Para desarrollo Android
 
 | Herramienta    | Notas                                        |
 | -------------- | -------------------------------------------- |
 | Android Studio | SDK y emulador                               |
 | Android SDK    | API 24+ (Android 7.0 mínimo)                 |
-| NDK            | Requerido por Tauri para compilación cruzada |
-
-### Para desarrollo de escritorio
-
-- **macOS**: Xcode Command Line Tools (`xcode-select --install`)
-- **Windows**: Visual Studio Build Tools con carga de trabajo "Desktop development with C++"
-- **Linux**: `build-essential`, `libwebkit2gtk-4.1-dev`, `libssl-dev`
 
 ---
 
@@ -46,61 +39,37 @@ cd changarro-app
 npm install
 ```
 
-### 3. Verificar que Tauri funciona
-
-```bash
-cd src-tauri
-cargo check
-```
-
-Si no tienes Rust instalado:
-
-```bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-```
-
 ---
 
 ## Desarrollo
 
-### Aplicación completa (frontend + shell nativo)
-
-```bash
-npm run tauri:dev
-```
-
-Esto levanta el servidor de Vite y abre la ventana nativa de Tauri con
-recarga automática. Es la forma recomendada para trabajar en el proyecto.
-
-### Solo el frontend (sin Tauri)
+### Servidor de desarrollo frontend
 
 ```bash
 npm run dev
 ```
 
-Abre `http://localhost:5173` en el navegador. Útil para desarrollo rápido
-de UI sin esperar la compilación de Rust.
+Abre `http://localhost:5173` en el navegador. Útil para desarrollo rápido de UI.
 
-### Desarrollo Android
+### Ejecutar en Android (Capacitor)
 
 ```bash
-npm run tauri android dev
+npm run cap:run
 ```
 
-Requiere un emulador corriendo o un dispositivo conectado por USB con
-depuración habilitada.
+Compila el frontend, lo sincroniza con Capacitor y ejecuta la aplicación en un dispositivo Android o emulador conectado.
+
+### Abrir en Android Studio
+
+```bash
+npm run cap:open
+```
+
+Abre el proyecto nativo en Android Studio para depuración o ajustes en el manifest.
 
 ---
 
 ## Build de producción
-
-### Escritorio (plataforma actual)
-
-```bash
-npm run tauri:build
-```
-
-Genera el instalador para la plataforma actual en `src-tauri/target/release/bundle/`.
 
 ### Solo frontend
 
@@ -108,16 +77,22 @@ Genera el instalador para la plataforma actual en `src-tauri/target/release/bund
 npm run build
 ```
 
-Ejecuta verificación de tipos con TypeScript y genera los archivos estáticos
-optimizados en `dist/`.
+Ejecuta verificación de tipos con TypeScript y genera los archivos estáticos optimizados en `dist/`.
 
-### Android (Capacitor)
+### Android APK (Capacitor)
 
 Compilación mediante los scripts automatizados de Capacitor:
 
 ```bash
-./scripts/build-apk-capacitor.sh          # Build debug (.apk)
-./scripts/build-apk-capacitor.sh release  # Build release firmado (.apk)
+npm run build:apk          # Build debug (.apk)
+npm run build:apk:release  # Build release firmado (.apk)
+```
+
+O directamente mediante el script:
+
+```bash
+./scripts/build-apk.sh          # Build debug (.apk)
+./scripts/build-apk.sh release  # Build release firmado (.apk)
 ```
 
 Para generar un **Android App Bundle (.aab)** para Google Play Store:
@@ -151,9 +126,11 @@ El proyecto cuenta con un flujo automatizado en `.github/workflows/build-android
 | `npm run build`               | Build de producción del frontend con verificación de tipos |
 | `npm run test:unit`           | Ejecutar pruebas unitarias con Vitest                      |
 | `npm run cap:sync`            | Compila frontend y sincroniza con Capacitor Android        |
+| `npm run cap:run`             | Compila, sincroniza y ejecuta en dispositivo Android       |
 | `npm run cap:open`            | Abre el proyecto Android en Android Studio                 |
-| `npm run tauri:dev`           | Desarrollo completo con shell nativo + hot reload          |
-| `npm run tauri:build`         | Build de producción completo para la plataforma actual     |
+| `npm run build:apk`           | Compila el APK de debug de Android con Capacitor           |
+| `npm run build:apk:release`   | Compila el APK de release firmado de Android               |
+| `npm run clean:builds`        | Limpia directorios de build y archivos de compilación      |
 
 ---
 

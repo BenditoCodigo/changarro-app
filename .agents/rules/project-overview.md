@@ -54,7 +54,7 @@ Es una caja registradora digital: simple, rápida y confiable.
 2. **Local-first por diseño**: Funciona completamente sin internet. Los datos viven
    en el dispositivo del usuario. Eventual sincronización opcional a la nube como backup.
 
-3. **Multiplataforma**: Disponible en Android (principal), Windows y macOS vía Tauri.
+3. **Multiplataforma**: Disponible en Android (principal) y multiplataforma vía Capacitor.
    El comerciante usa la herramienta en el dispositivo que tenga a la mano.
 
 4. **Sin telemetría, sin tracking, sin analytics**: Zero datos enviados a ningún lado.
@@ -67,26 +67,26 @@ Es una caja registradora digital: simple, rápida y confiable.
 ┌────────────────────────────────────────────────────┐
 │                   Frontend (este repo)              │
 │            Vue 3 + Vite + Tailwind CSS 4           │
-│                  SPA empaquetada en Tauri           │
+│                SPA empaquetada en Capacitor         │
 ├────────────────────────────────────────────────────┤
 │                   Runtime nativo                   │
-│              Tauri 2 (Rust backend)                │
-│         Acceso a filesystem, notificaciones        │
+│               Capacitor 8 (Bridge Android)         │
+│         Acceso a filesystem, plugins nativos       │
 ├────────────────────────────────────────────────────┤
 │                   Storage                          │
 │           IndexedDB (datos estructurados)           │
-│     Eventual: SQLite vía Tauri para persistencia   │
+│     Eventual: SQLite vía Capacitor para persistencia│
 ├────────────────────────────────────────────────────┤
 │                   Plataformas                      │
-│          Android • Windows • macOS                 │
+│                Android • Multiplataforma           │
 └────────────────────────────────────────────────────┘
 ```
 
 ### Este repositorio
 
-Contiene la aplicación completa (frontend + shell Tauri). Es una aplicación que:
+Contiene la aplicación completa (frontend + shell Capacitor). Es una aplicación que:
 
-- Se instala como app nativa en Android, Windows y macOS
+- Se instala como app nativa en Android y otras plataformas
 - Funciona completamente offline (local-first)
 - Almacena datos en IndexedDB en la etapa POC
 - No requiere backend ni conexión a internet para operar
@@ -103,7 +103,7 @@ Contiene la aplicación completa (frontend + shell Tauri). Es una aplicación qu
 | Estado       | Pinia (setup stores)                            |
 | Styling      | Tailwind CSS 4 (CSS-first, `@tailwindcss/vite`) |
 | TypeScript   | Strict mode                                     |
-| Shell nativo | Tauri 2                                         |
+| Shell nativo | Capacitor 8                                     |
 | Storage POC  | IndexedDB (Dexie.js o abstracción propia)       |
 | Testing      | Vitest + Playwright (cuando se requiera)        |
 
@@ -191,7 +191,7 @@ El proyecto tiene implementado:
 - Stack técnico completo
 - Lineamientos visuales (Serene Hearth design system)
 - Convenciones de código (Vue, Tailwind, TypeScript)
-- Configuración base de Tauri 2 (con soporte Android)
+- Configuración base de Capacitor 8 (con soporte Android)
 - Modelo de datos
 - Layout base (TopAppBar + Bottom Nav 3 tabs)
 - Vistas principales (Inicio, Carrito, Ventas, Venta Rápida, Ajustes, Inventario)

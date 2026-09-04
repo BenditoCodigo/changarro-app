@@ -248,7 +248,7 @@ Tailwind v4 usa `oklch` internamente. Seguir esta convención:
 ### Enfoque: Mobile-first (Android como plataforma principal)
 
 La app está diseñada para uso primario en dispositivos Android, pero debe funcionar
-correctamente en escritorio (Windows, macOS) gracias a Tauri. El diseño base es
+correctamente en pantallas grandes gracias al diseño responsivo y Capacitor. El diseño base es
 móvil y escala hacia arriba.
 
 ### Breakpoints por defecto (no modificar a menos que sea necesario)

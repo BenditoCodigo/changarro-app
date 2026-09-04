@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Limpia todos los artefactos de build para liberar espacio.
+# Limpia todos los artefactos de build de Capacitor para liberar espacio.
 #
 # Uso:
 #   ./scripts/clean-builds.sh        # Muestra qué se eliminará y pide confirmación
@@ -23,20 +23,19 @@ cd "$PROJECT_DIR"
 FORCE="${1:-}"
 
 echo -e "${YELLOW}╔══════════════════════════════════════╗${NC}"
-echo -e "${YELLOW}║   Changarro - Limpiar Builds         ║${NC}"
+echo -e "${YELLOW}║   Changarro - Limpiar Build          ║${NC}"
 echo -e "${YELLOW}╚══════════════════════════════════════╝${NC}"
 echo ""
 
-# Directorios a limpiar
+# Directorios a limpiar para Capacitor
 TARGETS=(
     "dist"
-    "src-tauri/target"
-    "src-tauri/gen/android/app/build"
-    "src-tauri/gen/android/.gradle"
-    "src-tauri/gen/android/buildSrc/.gradle"
+    "android/app/build"
+    "android/.gradle"
+    "android/build"
 )
 
-# APKs sueltos en la raíz
+# APKs sueltos en la raíz específicos de Capacitor
 APKS=($(find . -maxdepth 1 -name "changarro-*.apk" -o -name "*-aligned.apk" 2>/dev/null))
 
 # Calcular espacio
@@ -70,8 +69,6 @@ fi
 echo ""
 
 # Calcular total
-TOTAL=$(du -sh ${TARGETS[@]} ${APKS[@]} 2>/dev/null | tail -1 | cut -f1)
-# Mejor calcular la suma real
 TOTAL=$(du -shc ${TARGETS[@]} ${APKS[@]} 2>/dev/null | grep total | cut -f1)
 echo -e "${YELLOW}Espacio total a liberar: ~${TOTAL}${NC}"
 echo ""

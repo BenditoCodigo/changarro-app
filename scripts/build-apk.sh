@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Compila el APK de Changarro para Android.
+# Compila el APK de Changarro para Android usando Capacitor.
 #
 # Uso:
 #   ./scripts/build-apk.sh          # Build debug (se instala directo)
@@ -8,9 +8,8 @@
 #
 # Requisitos:
 #   - Node.js, npm
-#   - Rust con targets Android (rustup target add aarch64-linux-android ...)
 #   - Android SDK con build-tools
-#   - Java 17 (export JAVA_HOME=/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home)
+#   - Java 17+ (export JAVA_HOME=...)
 #   - Para release: keystore en ./changarro-release.keystore
 #
 
@@ -26,6 +25,21 @@ NC='\033[0m' # No Color
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 cd "$PROJECT_DIR"
+
+# Configurar JAVA_HOME para usar Java 21 (requerido por Capacitor 6+) si está disponible en macOS
+if [ -x "/usr/libexec/java_home" ]; then
+    JAVA_21_HOME=$(/usr/libexec/java_home -v 21 2>/dev/null || true)
+    if [ -n "$JAVA_21_HOME" ]; then
+        echo -e "${YELLOW}▶ Configurando JAVA_HOME para usar Java 21: $JAVA_21_HOME${NC}"
+        export JAVA_HOME="$JAVA_21_HOME"
+    fi
+fi
+
+# Verificar que existe la carpeta android
+if [ ! -d "android" ]; then
+    echo -e "${RED}Error: No se encontró la carpeta nativa 'android'. Ejecuta 'npx cap add android' primero.${NC}"
+    exit 1
+fi
 
 # Detectar build-tools
 ANDROID_HOME="${ANDROID_HOME:-$HOME/Library/Android/sdk}"
@@ -46,12 +60,17 @@ VERSION=$(node -p "require('./package.json').version")
 MODE="${1:-debug}"
 
 echo -e "${GREEN}╔══════════════════════════════════════╗${NC}"
-echo -e "${GREEN}║   Changarro APK Builder v${VERSION}      ║${NC}"
+echo -e "${GREEN}║   Changarro Capacitor Builder v${VERSION}║${NC}"
 echo -e "${GREEN}╚══════════════════════════════════════╝${NC}"
 echo ""
 
+# Compilar frontend y sincronizar
+echo -e "${YELLOW}▶ Compilando frontend y sincronizando con Capacitor...${NC}"
+npm run build
+npx cap sync android
+
 if [ "$MODE" = "release" ]; then
-    echo -e "${YELLOW}▶ Modo: RELEASE${NC}"
+    echo -e "${YELLOW}▶ Modo: RELEASE (Capacitor)${NC}"
     echo ""
 
     # Verificar keystore
@@ -83,14 +102,16 @@ if [ "$MODE" = "release" ]; then
         echo ""
     fi
 
-    # Build release
-    echo -e "${YELLOW}▶ Compilando APK release...${NC}"
-    npx tauri android build --apk
+    # Build release con Gradle
+    echo -e "${YELLOW}▶ Compilando APK release con Gradle...${NC}"
+    cd android
+    ./gradlew assembleRelease
+    cd ..
 
-    UNSIGNED_APK="src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk"
+    UNSIGNED_APK="android/app/build/outputs/apk/release/app-release-unsigned.apk"
 
     if [ ! -f "$UNSIGNED_APK" ]; then
-        echo -e "${RED}Error: No se generó el APK.${NC}"
+        echo -e "${RED}Error: No se generó el APK en $UNSIGNED_APK.${NC}"
         exit 1
     fi
 
@@ -122,17 +143,19 @@ if [ "$MODE" = "release" ]; then
     echo -e "${GREEN}✓ APK release generado: ${OUTPUT_APK} (${SIZE})${NC}"
 
 else
-    echo -e "${YELLOW}▶ Modo: DEBUG${NC}"
+    echo -e "${YELLOW}▶ Modo: DEBUG (Capacitor)${NC}"
     echo ""
 
-    # Build debug (viene firmado automáticamente)
-    echo -e "${YELLOW}▶ Compilando APK debug...${NC}"
-    npx tauri android build --apk --debug
+    # Build debug con Gradle
+    echo -e "${YELLOW}▶ Compilando APK debug con Gradle...${NC}"
+    cd android
+    ./gradlew assembleDebug
+    cd ..
 
-    DEBUG_APK="src-tauri/gen/android/app/build/outputs/apk/universal/debug/app-universal-debug.apk"
+    DEBUG_APK="android/app/build/outputs/apk/debug/app-debug.apk"
 
     if [ ! -f "$DEBUG_APK" ]; then
-        echo -e "${RED}Error: No se generó el APK.${NC}"
+        echo -e "${RED}Error: No se generó el APK en $DEBUG_APK.${NC}"
         exit 1
     fi
 
