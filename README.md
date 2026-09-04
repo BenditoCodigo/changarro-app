@@ -73,13 +73,13 @@ En Bendito Código creamos Changarro para quitar todas estas trabas de golpe:
 
 <div align="center">
 
-| Inicio (Catálogo) | Carrito listo para cobrar | Historial de ventas |
-|:---:|:---:|:---:|
-| ![Pantalla de inicio con catálogo de productos](documentacion/assets/screenshot-inicio.png) | ![Pantalla de carrito con productos y total](documentacion/assets/screenshot-carrito.png) | ![Pantalla de historial de ventas](documentacion/assets/screenshot-ventas.png) |
+| Inicio (Catálogo) | Pantalla de Cobro |
+|:---:|:---:|
+| ![Catálogo de productos en Inicio](documentacion/assets/screenshot-inicio.jpg) | ![Pantalla de cobro con métodos de pago](documentacion/assets/screenshot-cobro.jpg) |
 
-| Cobro (Cálculo de cambio) | Corte de caja (Turnos) | Ajustes de la app |
-|:---:|:---:|:---:|
-| ![Pantalla de cobro con cálculo de cambio](documentacion/assets/screenshot-cobro.png) | ![Pantalla de cierre de turno](documentacion/assets/screenshot-turno.png) | ![Pantalla de ajustes](documentacion/assets/screenshot-ajustes.png) |
+| Reporte del Negocio | Detalle de Venta |
+|:---:|:---:|
+| ![Reportes y métricas del negocio](documentacion/assets/screenshot-reporte.jpg) | ![Detalle completo de transacción](documentacion/assets/screenshot-detalle-venta.jpg) |
 
 </div>
 
