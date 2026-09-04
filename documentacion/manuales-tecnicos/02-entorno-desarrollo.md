@@ -104,17 +104,25 @@ cd android && ./gradlew bundleRelease
 
 El archivo se genera en `android/app/build/outputs/bundle/release/app-release.aab`.
 
+### macOS DMG (Capacitor Electron)
+
+Compilación de la aplicación de escritorio de macOS (.dmg):
+
+```bash
+npm run build:dmg
+```
+
+El instalador `.dmg` generado estará disponible en la carpeta `electron/dist/`.
+
 ---
 
 ## Integración Continua (CI/CD con GitHub Actions)
 
-El proyecto cuenta con un flujo automatizado en `.github/workflows/build-android.yml` que:
+El proyecto cuenta con dos flujos automatizados:
+1. `.github/workflows/build-android.yml`: Compila AAB y APK para Android.
+2. `.github/workflows/build-macos.yml`: Compila el instalador `.dmg` para macOS en runners `macos-latest`.
 
-1. Ejecuta verificación de tipos y tests unitarios.
-2. Compila la app web y sincroniza con Capacitor.
-3. Genera tanto el paquete **AAB (.aab)** para Play Store como el **APK (.apk)** para pruebas directas.
-4. Firma ambos archivos si los secretos de firma (`KEYSTORE_BASE64`, `KEY_ALIAS`, `KEYSTORE_PASSWORD`, `KEY_PASSWORD`) están configurados en el repositorio de GitHub.
-5. Al publicar una versión con tag `v*` (ejemplo `v0.6.0`), crea automáticamente una Release en GitHub anexando los instalables.
+Ambos flujos ejecutan verificación de tipos, pruebas unitarias y adjuntan los paquetes resultantes como artefactos y a la GitHub Release correspondiente cuando se crea un tag `v*` (ejemplo `v0.7.0`).
 
 ---
 
@@ -128,8 +136,11 @@ El proyecto cuenta con un flujo automatizado en `.github/workflows/build-android
 | `npm run cap:sync`            | Compila frontend y sincroniza con Capacitor Android        |
 | `npm run cap:run`             | Compila, sincroniza y ejecuta en dispositivo Android       |
 | `npm run cap:open`            | Abre el proyecto Android en Android Studio                 |
+| `npm run cap:electron:sync`   | Compila frontend y sincroniza con Capacitor Electron       |
+| `npm run cap:electron:run`    | Ejecuta la app de escritorio en modo desarrollo            |
 | `npm run build:apk`           | Compila el APK de debug de Android con Capacitor           |
 | `npm run build:apk:release`   | Compila el APK de release firmado de Android               |
+| `npm run build:dmg`           | Compila el paquete `.dmg` para macOS                       |
 | `npm run clean:builds`        | Limpia directorios de build y archivos de compilación      |
 
 ---

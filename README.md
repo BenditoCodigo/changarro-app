@@ -72,8 +72,8 @@ Para ti, si:
 Cuando esté disponible, la encontrarás en la sección de [**Releases**](https://github.com/bendito-codigo/changarro-app/releases) de este repositorio:
 
 - 📱 **Android** — archivo `.apk` listo para instalar (Plataforma activa)
+- 🍎 **macOS** — instalador `.dmg` (Plataforma activa)
 - 🖥️ **Windows** — instalador `.exe` (Próximamente / En planes)
-- 🍎 **macOS** — archivo `.dmg` (Próximamente / En planes)
 
 ---
 
