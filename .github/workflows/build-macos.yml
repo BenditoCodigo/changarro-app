@@ -2,8 +2,6 @@ name: macOS Build (Capacitor Electron DMG)
 
 on:
   push:
-    branches:
-      - main
     tags:
       - 'v*'
   workflow_dispatch:

@@ -1,9 +1,14 @@
-name: Code Quality (PR to Main)
+name: Code Quality (PR & Tags)
 
 on:
   pull_request:
     branches:
       - main
+      - dev
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
 
 jobs:
   quality-check:

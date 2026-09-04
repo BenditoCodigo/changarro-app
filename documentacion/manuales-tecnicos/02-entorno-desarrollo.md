@@ -125,11 +125,12 @@ python3 scripts/generate-icons-macos.py path/to/icon-1024x1024.png
 
 ## Integración Continua (CI/CD con GitHub Actions)
 
-El proyecto cuenta con dos flujos automatizados:
-1. `.github/workflows/build-android.yml`: Compila AAB y APK para Android.
-2. `.github/workflows/build-macos.yml`: Compila el instalador `.dmg` para macOS en runners `macos-latest`.
+El proyecto cuenta con tres flujos automatizados:
+1. `.github/workflows/quality-pr.yml`: Ejecuta verificación de linter, tipos (`vue-tsc`), pruebas unitarias (`Vitest`) y compilación Vite en Pull Requests dirigidos a `main` o `dev`, y en publicaciones de tags `v*`.
+2. `.github/workflows/build-android.yml`: Compila AAB y APK para Android. Se ejecuta únicamente en publicaciones de tags `v*` o ejecuciones manuales (`workflow_dispatch`).
+3. `.github/workflows/build-macos.yml`: Compila el instalador `.dmg` para macOS en runners `macos-latest`. Se ejecuta únicamente en publicaciones de tags `v*` o ejecuciones manuales (`workflow_dispatch`).
 
-Ambos flujos ejecutan verificación de tipos, pruebas unitarias y adjuntan los paquetes resultantes como artefactos y a la GitHub Release correspondiente cuando se crea un tag `v*` (ejemplo `v0.7.0`).
+Los flujos de compilación nativa generan y adjuntan los instaladores en los GitHub Releases correspondientes al etiquetar una versión `v*`.
 
 ---
 
