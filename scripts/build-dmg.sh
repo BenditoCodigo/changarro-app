@@ -43,6 +43,11 @@ if [ ! -d "electron" ]; then
     exit 1
 fi
 
+if [ ! -d "electron/node_modules" ]; then
+    echo -e "${YELLOW}▶ Instalando dependencias de la carpeta electron...${NC}"
+    cd electron && npm ci && cd ..
+fi
+
 # Compilar frontend y sincronizar con Capacitor Electron
 echo -e "${YELLOW}▶ Compilando frontend web y sincronizando con Capacitor Electron...${NC}"
 npm run build

@@ -21,8 +21,10 @@ jobs:
           node-version: '22'
           cache: 'npm'
 
-      - name: Instalar dependencias de Node
-        run: npm ci
+      - name: Instalar dependencias de Node (raíz y electron)
+        run: |
+          npm ci
+          cd electron && npm ci
 
       - name: Verificar tipos (vue-tsc)
         run: npm run type-check
