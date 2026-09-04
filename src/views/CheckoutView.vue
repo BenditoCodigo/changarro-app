@@ -213,12 +213,12 @@ async function handleConfirmSale() {
       <h2 class="text-[17px] font-bold font-display text-on-surface mb-4">
         Método de Pago
       </h2>
-      <div class="grid grid-cols-3 gap-3">
+      <div class="flex w-full gap-3">
         <button
           v-for="method in availablePaymentMethods"
           :key="method.id"
           :class="[
-            'flex flex-col items-center justify-center gap-2 py-4 px-3 rounded-2xl border transition-all duration-200 active:scale-95',
+            'flex-1 min-w-0 flex flex-col items-center justify-center gap-2 py-4 px-3 rounded-2xl border transition-all duration-200 active:scale-95',
             selectedPaymentMethod === method.id
               ? 'bg-primary-container text-on-primary-container border-primary-container font-bold shadow-md'
               : 'bg-surface-container-high border-outline-variant text-on-surface-variant hover:border-surface-tint'
@@ -226,7 +226,7 @@ async function handleConfirmSale() {
           @click="selectedPaymentMethod = method.id"
         >
           <span class="material-symbols-outlined text-[24px]">{{ method.icon }}</span>
-          <span class="text-[14px] font-display">{{ method.label }}</span>
+          <span class="text-[14px] font-display truncate w-full text-center">{{ method.label }}</span>
         </button>
       </div>
     </section>

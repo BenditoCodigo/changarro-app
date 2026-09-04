@@ -531,14 +531,29 @@ async function toggleTorch() {
         </p>
       </div>
 
-      <!-- FAB: Venta Rápida -->
-      <RouterLink
-        to="/quick-sale"
-        class="fixed bottom-28 right-5 z-40 flex items-center justify-center w-14 h-14 rounded-full bg-primary-container text-on-primary-container shadow-lg transition-all duration-200 hover:shadow-xl active:scale-95"
-        aria-label="Venta Rápida"
-      >
-        <span class="material-symbols-outlined text-[19px]">add</span>
-      </RouterLink>
+      <!-- FAB Group: Venta Rápida (+) + Cobrar button (desktop/tablet only when items in cart) -->
+      <div class="fixed bottom-28 right-5 z-40 flex flex-col items-end gap-3">
+        <!-- FAB: Venta Rápida -->
+        <RouterLink
+          to="/quick-sale"
+          class="flex items-center justify-center w-14 h-14 rounded-full bg-primary-container text-on-primary-container shadow-lg transition-all duration-200 hover:shadow-xl active:scale-95 shrink-0"
+          aria-label="Venta Rápida"
+        >
+          <span class="material-symbols-outlined text-[24px]">add</span>
+        </RouterLink>
+
+        <!-- Floating Cobrar button: displayed under Venta Rápida on non-mobile screens when cart has items -->
+        <RouterLink
+          v-if="cartStore.itemCount > 0"
+          to="/cart"
+          class="hidden sm:flex items-center gap-2.5 px-5 py-3.5 rounded-full bg-surface-tint text-on-primary font-display font-bold text-[15px] shadow-xl border border-outline-variant/30 transition-all duration-200 hover:scale-[1.02] active:scale-95 shrink-0"
+        >
+          <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1">
+            payments
+          </span>
+          <span>Cobrar (${{ formatPrice(cartStore.total) }})</span>
+        </RouterLink>
+      </div>
     </div>
 
     <!-- TAB 2: SUPERMARKET SCANNER VIEW -->
