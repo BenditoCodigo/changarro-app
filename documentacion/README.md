@@ -10,10 +10,11 @@ y contribuir a su desarrollo.
 
 ## Contenido
 
-| #   | Documento                | Descripción                     |
-| --- | ------------------------ | ------------------------------- |
-| 01  | [Visión](./01-vision.md) | Hacia dónde va este proyecto    |
-| 02  | [Misión](./02-mision.md) | Para qué existe y a quién sirve |
+| #   | Documento                                                   | Descripción                                       |
+| --- | ----------------------------------------------------------- | ------------------------------------------------- |
+| 01  | [Visión](./01-vision.md)                                    | Hacia dónde va este proyecto                      |
+| 02  | [Misión](./02-mision.md)                                    | Para qué existe y a quién sirve                   |
+| 03  | [Política de Privacidad](./03-politica-de-privacidad.md)    | Compromiso de protección de datos y privacidad    |
 
 ### Subcarpetas
 
