@@ -10,7 +10,7 @@ Una caja registradora digital gratuita, hecha para tiendas de barrio,
 fondas, papelerías y cualquier negocio pequeño que quiera llevar el control
 de sus ventas sin depender de internet ni pagar suscripciones.
 
-[![Versión](https://img.shields.io/badge/versión-0.5.0-c5c5d8?style=flat-square&labelColor=20201f)](https://github.com/bendito-codigo/changarro-app/releases)
+[![Versión](https://img.shields.io/badge/versión-v0.11.beta-c5c5d8?style=flat-square&labelColor=20201f)](https://github.com/bendito-codigo/changarro-app/releases)
 [![Plataforma](https://img.shields.io/badge/plataforma-Android%20%7C%20Windows%20%26%20macOS%20(futuro)-4ade80?style=flat-square&labelColor=20201f)](https://github.com/bendito-codigo/changarro-app/releases)
 [![Sin internet](https://img.shields.io/badge/funciona-sin%20internet-c5c5d8?style=flat-square&labelColor=20201f)](#)
 [![Licencia](https://img.shields.io/badge/licencia-PolyForm%20NC-c5c5d8?style=flat-square&labelColor=20201f)](./LICENSE)
