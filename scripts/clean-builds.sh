@@ -27,16 +27,18 @@ echo -e "${YELLOW}║   Changarro - Limpiar Build          ║${NC}"
 echo -e "${YELLOW}╚══════════════════════════════════════╝${NC}"
 echo ""
 
-# Directorios a limpiar para Capacitor
+# Directorios a limpiar para Capacitor (Android & Electron)
 TARGETS=(
     "dist"
     "android/app/build"
     "android/.gradle"
     "android/build"
+    "electron/dist"
+    "electron/build"
 )
 
-# APKs sueltos en la raíz específicos de Capacitor
-APKS=($(find . -maxdepth 1 -name "changarro-*.apk" -o -name "*-aligned.apk" 2>/dev/null))
+# Instalables sueltos en la raíz (APKs y DMGs)
+APKS=($(find . -maxdepth 1 -name "changarro-*.apk" -o -name "changarro-*.dmg" -o -name "*-aligned.apk" 2>/dev/null))
 
 # Calcular espacio
 TOTAL_SIZE=0

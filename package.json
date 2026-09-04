@@ -17,7 +17,7 @@
     "cap:electron:run": "npm run build && npx cap run @capawesome/capacitor-electron",
     "build:apk": "./scripts/build-apk.sh",
     "build:apk:release": "./scripts/build-apk.sh release",
-    "build:dmg": "npm run cap:electron:sync && cd electron && npm run pack",
+    "build:dmg": "./scripts/build-dmg.sh",
     "clean:builds": "./scripts/clean-builds.sh",
     "lint": "run-s \"lint:*\"",
     "lint:oxlint": "oxlint . --fix",

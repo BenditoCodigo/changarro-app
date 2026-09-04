@@ -38,17 +38,9 @@ __screenshots__/
 # Vite
 *.timestamp-*-*.mjs
 
-# Tauri
-src-tauri/target/
-src-tauri/gen/
-src-tauri/Cargo.lock
-
-# Kiro
-.kiro/specs/
-
-**.keystore
-
-**.apk**
+*.keystore
+*.apk*
+*.dmg*
 
 # Capacitor / Android
 android/.gradle/
@@ -57,3 +49,9 @@ android/app/build/
 android/app/src/main/assets/public/
 android/app/src/main/assets/capacitor.config.json
 android/app/src/main/assets/capacitor.plugins.json
+
+# Electron / macOS
+electron/dist/
+electron/build/
+electron/app/
+electron/node_modules/
