@@ -43,7 +43,7 @@ Es la pantalla principal para registrar ventas. Si el modo de escáner está act
    - **Venta rápida**: toca el botón **+** (abajo a la derecha) para agregar un producto o servicio temporal.
 
 2. **📷 Escáner Cajero (Modo Supermercado)**:
-   - **Cámara continua**: mantiene la cámara activa para pasar productos rápidamente uno tras otro como en una caja registradora.
+   - **Cámara continua**: mantiene la cámara activa para pasar productos rápidamente uno tras otro como en un punto de venta.
    - **Pausa de lectura (2s)**: evita registrar por accidente dos veces el mismo producto de forma inmediata.
    - **Producto registrado**: emite un sonido, vibración y muestra una notificación flotante confirmando la adición al carrito.
    - **Código no registrado**: si escaneas un producto que no está en el catálogo, muestra una alerta permitiendo agregarlo como Venta Rápida o registrarlo en el Inventario.

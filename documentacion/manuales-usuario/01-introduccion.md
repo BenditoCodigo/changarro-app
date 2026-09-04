@@ -7,7 +7,7 @@ Este documento te explica qué es Changarro y qué puedes hacer con él.
 ## ¿Qué es Changarro?
 
 Changarro es una aplicación para llevar el registro de ventas de tu negocio.
-Funciona como una caja registradora digital en tu celular o computadora.
+Funciona como un punto de venta digital en tu celular o computadora.
 
 Con Changarro puedes:
 

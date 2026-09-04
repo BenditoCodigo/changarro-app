@@ -42,7 +42,7 @@ sus datos bajo su control absoluto.
 - Negocios pequeños que no pueden (o no quieren) pagar software de punto de venta
 
 No es un ERP empresarial ni un sistema de inventario complejo.
-Es una caja registradora digital: simple, rápida y confiable.
+Es un punto de venta digital: simple, rápido y confiable.
 
 ---
 

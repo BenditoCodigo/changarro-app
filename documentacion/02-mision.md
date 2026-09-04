@@ -36,7 +36,7 @@ Changarro es una aplicación sencilla que permite:
 ## Para quién no es
 
 Changarro no es un sistema de inventario completo, no es un ERP empresarial,
-no es una plataforma colaborativa para equipos grandes. Es una caja registradora
+no es una plataforma colaborativa para equipos grandes. Es un punto de venta
 digital: hace una cosa y la hace bien.
 
 ---

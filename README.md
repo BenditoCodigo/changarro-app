@@ -4,7 +4,7 @@
 
 # Changarro
 
-**Tu caja registradora, sin internet y sin mensualidades.**
+**Tu punto de venta, sin internet y sin mensualidades.**
 
 Una herramienta gratuita hecha para el verdadero motor del barrio: la tiendita de la esquina, la papelería, la fonda, el puesto del mercado y cualquier persona con un negocio local que quiera llevar las cuentas de lo que vende sin enredarse ni pagar rentas.
 
