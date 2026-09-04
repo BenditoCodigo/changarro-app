@@ -2,21 +2,47 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCartStore } from '@/stores/cart'
+import { useSettingsStore } from '@/stores/settings'
 import { playCheckoutSuccessAnimation } from '@/composables/useParticles'
 
 const router = useRouter()
 const cartStore = useCartStore()
+const settingsStore = useSettingsStore()
 
 const cashReceived = ref('')
 const isSubmitting = ref(false)
 const countdown = ref(3)
 let timerId: ReturnType<typeof setInterval> | null = null
 
+const availablePaymentMethods = computed(() => {
+  const list: { id: 'cash' | 'card' | 'transfer'; label: string; icon: string }[] = []
+  if (settingsStore.paymentMethods.cash) {
+    list.push({ id: 'cash', label: 'Efectivo', icon: 'payments' })
+  }
+  if (settingsStore.paymentMethods.card) {
+    list.push({ id: 'card', label: 'Tarjeta', icon: 'credit_card' })
+  }
+  if (settingsStore.paymentMethods.transfer) {
+    list.push({ id: 'transfer', label: 'Transferencia', icon: 'account_balance' })
+  }
+  return list
+})
+
+const selectedPaymentMethod = ref<'cash' | 'card' | 'transfer'>('cash')
+
 onMounted(() => {
   // If the cart is empty, go back to the cart view
   if (cartStore.items.length === 0) {
     router.replace('/cart')
     return
+  }
+
+  // Ensure default method is an active payment method
+  if (
+    availablePaymentMethods.value.length > 0 &&
+    !availablePaymentMethods.value.some((m) => m.id === selectedPaymentMethod.value)
+  ) {
+    selectedPaymentMethod.value = availablePaymentMethods.value[0]!.id
   }
 
   // Start the 3-second countdown to prevent accidental double clicks
@@ -53,9 +79,12 @@ const remaining = computed(() => {
   return total.value - cashAmount.value
 })
 
-// Validate if the cash received is enough
+// Validate if the payment is valid
 const isValid = computed(() => {
-  return cashAmount.value >= total.value
+  if (selectedPaymentMethod.value === 'cash') {
+    return cashAmount.value >= total.value
+  }
+  return true
 })
 
 // Quick cash bill suggestions (Mexico/Latin America standard: 50, 100, 200, 500)
@@ -98,7 +127,9 @@ async function handleConfirmSale() {
   if (isButtonDisabled.value || isSubmitting.value) return
   isSubmitting.value = true
   try {
-    await cartStore.finalizeSale(cashAmount.value, change.value)
+    const received = selectedPaymentMethod.value === 'cash' ? cashAmount.value : total.value
+    const changeVal = selectedPaymentMethod.value === 'cash' ? change.value : 0
+    await cartStore.finalizeSale(received, changeVal, selectedPaymentMethod.value)
     await playCheckoutSuccessAnimation()
     router.push('/')
   } catch (error) {
@@ -130,7 +161,9 @@ async function handleConfirmSale() {
     <!-- Sale Summary Card -->
     <section class="bg-surface-container border border-outline-variant rounded-[2rem] p-8 mb-6">
       <div class="text-center mb-6">
-        <p class="text-[14px] uppercase tracking-wider font-semibold text-on-surface-variant font-display mb-1">
+        <p
+          class="text-[14px] uppercase tracking-wider font-semibold text-on-surface-variant font-display mb-1"
+        >
           Total a Cobrar
         </p>
         <p class="text-[40px] leading-[48px] font-bold text-surface-tint font-display">
@@ -139,14 +172,45 @@ async function handleConfirmSale() {
       </div>
 
       <!-- Item count summary -->
-      <div class="flex justify-between items-center text-[15px] text-on-surface-variant/80 border-t border-outline-variant pt-4">
+      <div
+        class="flex justify-between items-center text-[15px] text-on-surface-variant/80 border-t border-outline-variant pt-4"
+      >
         <span>Artículos en el carrito</span>
         <span class="font-bold text-on-surface">{{ cartStore.itemCount }} producto(s)</span>
       </div>
     </section>
 
-    <!-- Cash Input Card -->
-    <section class="bg-surface-container border border-outline-variant rounded-[2rem] p-8 mb-6">
+    <!-- Payment Method Selector Card (only if multiple payment methods are active) -->
+    <section
+      v-if="availablePaymentMethods.length > 1"
+      class="bg-surface-container border border-outline-variant rounded-[2rem] p-6 mb-6"
+    >
+      <h2 class="text-[17px] font-bold font-display text-on-surface mb-4">
+        Método de Pago
+      </h2>
+      <div class="grid grid-cols-3 gap-3">
+        <button
+          v-for="method in availablePaymentMethods"
+          :key="method.id"
+          :class="[
+            'flex flex-col items-center justify-center gap-2 py-4 px-3 rounded-2xl border transition-all duration-200 active:scale-95',
+            selectedPaymentMethod === method.id
+              ? 'bg-primary-container text-on-primary-container border-primary-container font-bold shadow-md'
+              : 'bg-surface-container-high border-outline-variant text-on-surface-variant hover:border-surface-tint'
+          ]"
+          @click="selectedPaymentMethod = method.id"
+        >
+          <span class="material-symbols-outlined text-[24px]">{{ method.icon }}</span>
+          <span class="text-[14px] font-display">{{ method.label }}</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Cash Input Card (when selected payment method is Cash) -->
+    <section
+      v-if="selectedPaymentMethod === 'cash'"
+      class="bg-surface-container border border-outline-variant rounded-[2rem] p-8 mb-6"
+    >
       <h2 class="text-[17px] font-bold font-display text-on-surface mb-4">
         ¿Con cuánto paga el cliente?
       </h2>
@@ -154,7 +218,9 @@ async function handleConfirmSale() {
       <!-- Input Field and Adjust Buttons -->
       <div class="flex items-center gap-3 mb-6">
         <div class="relative flex-1">
-          <span class="absolute left-6 top-1/2 -translate-y-1/2 text-[24px] font-bold text-on-surface-variant">
+          <span
+            class="absolute left-6 top-1/2 -translate-y-1/2 text-[24px] font-bold text-on-surface-variant"
+          >
             $
           </span>
           <input
@@ -189,7 +255,9 @@ async function handleConfirmSale() {
 
       <!-- Quick Denominations -->
       <div class="mb-6">
-        <p class="text-[13px] uppercase tracking-wider font-semibold text-on-surface-variant font-display mb-3">
+        <p
+          class="text-[13px] uppercase tracking-wider font-semibold text-on-surface-variant font-display mb-3"
+        >
           Sugerencias de pago
         </p>
         <div class="flex flex-wrap gap-2.5">
@@ -216,7 +284,10 @@ async function handleConfirmSale() {
       <!-- Change / Missing Calculations -->
       <div class="border-t border-outline-variant pt-6">
         <!-- Change display (when paid enough) -->
-        <div v-if="isValid" class="flex justify-between items-center bg-primary-container/10 p-5 rounded-2xl border border-primary-container/20">
+        <div
+          v-if="isValid"
+          class="flex justify-between items-center bg-primary-container/10 p-5 rounded-2xl border border-primary-container/20"
+        >
           <span class="text-[16px] font-semibold text-on-surface">Cambio a entregar</span>
           <span class="text-[24px] font-bold text-primary-fixed-dim font-display">
             ${{ formatPrice(change) }}
@@ -224,13 +295,39 @@ async function handleConfirmSale() {
         </div>
 
         <!-- Missing display (when payment is incomplete) -->
-        <div v-else class="flex justify-between items-center bg-error/5 p-5 rounded-2xl border border-error/20">
+        <div
+          v-else
+          class="flex justify-between items-center bg-error/5 p-5 rounded-2xl border border-error/20"
+        >
           <span class="text-[15px] font-semibold text-on-surface-variant">Falta por pagar</span>
           <span class="text-[20px] font-bold text-error font-display">
             ${{ formatPrice(remaining) }}
           </span>
         </div>
       </div>
+    </section>
+
+    <!-- Card or Transfer Information Card -->
+    <section
+      v-else
+      class="bg-surface-container border border-outline-variant rounded-[2rem] p-8 mb-6 text-center"
+    >
+      <div class="flex justify-center mb-4">
+        <div
+          class="flex items-center justify-center w-16 h-16 rounded-full bg-primary-container/20 text-surface-tint"
+        >
+          <span class="material-symbols-outlined text-[32px]">
+            {{ selectedPaymentMethod === 'card' ? 'credit_card' : 'account_balance' }}
+          </span>
+        </div>
+      </div>
+      <h2 class="text-[19px] font-bold font-display text-on-surface mb-2">
+        Pago con {{ selectedPaymentMethod === 'card' ? 'Tarjeta' : 'Transferencia' }}
+      </h2>
+      <p class="text-[14px] text-on-surface-variant font-sans max-w-sm mx-auto">
+        Procesa el cobro en la terminal o verifica la transferencia en tu banco por el monto exacto de
+        <strong class="text-on-surface">${{ formatPrice(total) }}</strong>.
+      </p>
     </section>
 
     <!-- Bottom Action Button -->

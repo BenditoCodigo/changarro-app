@@ -47,6 +47,20 @@ function setDefaultTab(tab: 'catalog' | 'scanner') {
   settingsStore.setDefaultHomeTab(tab)
 }
 
+const paymentMethodWarning = ref('')
+
+async function togglePaymentMethod(method: 'cash' | 'card' | 'transfer') {
+  paymentMethodWarning.value = ''
+  const current = settingsStore.paymentMethods[method]
+  const success = await settingsStore.setPaymentMethodEnabled(method, !current)
+  if (!success) {
+    paymentMethodWarning.value = 'Debes mantener al menos un método de pago activo.'
+    setTimeout(() => {
+      paymentMethodWarning.value = ''
+    }, 3000)
+  }
+}
+
 // Backup & Restore state
 const showExportModal = ref(false)
 const showImportModal = ref(false)
@@ -269,6 +283,93 @@ function handleImport(event: Event) {
       <span class="text-[15px] text-on-surface-variant font-sans"
         >{{ Math.round(settingsStore.taxRate * 100) }}%</span
       >
+    </div>
+
+    <!-- MÉTODOS DE PAGO Section -->
+    <h2
+      class="uppercase tracking-wider text-[14px] font-semibold text-on-surface-variant font-display mt-8 mb-4"
+    >
+      Métodos de Pago
+    </h2>
+
+    <p class="text-[13px] text-on-surface-variant/60 font-sans mb-3 leading-relaxed">
+      Selecciona las formas de cobro aceptadas en tu negocio. Debe haber al menos un método activo.
+    </p>
+
+    <Transition name="fade-up">
+      <div
+        v-if="paymentMethodWarning"
+        class="mb-3 px-4 py-2.5 rounded-xl bg-error/10 border border-error/30 text-error text-[13px] font-sans flex items-center gap-2"
+      >
+        <span class="material-symbols-outlined text-[18px]">warning</span>
+        <span>{{ paymentMethodWarning }}</span>
+      </div>
+    </Transition>
+
+    <!-- Efectivo -->
+    <div class="flex justify-between items-center py-4 border-b border-outline-variant">
+      <div class="flex items-center gap-3">
+        <span class="material-symbols-outlined text-on-surface-variant">payments</span>
+        <div>
+          <div class="text-[15px] text-on-surface font-sans">Efectivo</div>
+          <div class="text-[13px] text-on-surface-variant/60 font-sans">Cobro tradicional con dinero físico</div>
+        </div>
+      </div>
+      <button
+        class="shrink-0 relative w-12 h-6 rounded-full transition-colors duration-200"
+        :class="settingsStore.paymentMethods.cash ? 'bg-primary-fixed-dim' : 'bg-surface-container-highest'"
+        aria-label="Habilitar efectivo"
+        @click="togglePaymentMethod('cash')"
+      >
+        <span
+          class="absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-200"
+          :class="settingsStore.paymentMethods.cash ? 'translate-x-6' : 'translate-x-0.5'"
+        ></span>
+      </button>
+    </div>
+
+    <!-- Tarjeta -->
+    <div class="flex justify-between items-center py-4 border-b border-outline-variant">
+      <div class="flex items-center gap-3">
+        <span class="material-symbols-outlined text-on-surface-variant">credit_card</span>
+        <div>
+          <div class="text-[15px] text-on-surface font-sans">Tarjeta de débito / crédito</div>
+          <div class="text-[13px] text-on-surface-variant/60 font-sans">Cobro con terminal punto de venta (TPV)</div>
+        </div>
+      </div>
+      <button
+        class="shrink-0 relative w-12 h-6 rounded-full transition-colors duration-200"
+        :class="settingsStore.paymentMethods.card ? 'bg-primary-fixed-dim' : 'bg-surface-container-highest'"
+        aria-label="Habilitar tarjeta"
+        @click="togglePaymentMethod('card')"
+      >
+        <span
+          class="absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-200"
+          :class="settingsStore.paymentMethods.card ? 'translate-x-6' : 'translate-x-0.5'"
+        ></span>
+      </button>
+    </div>
+
+    <!-- Transferencia -->
+    <div class="flex justify-between items-center py-4 border-b border-outline-variant">
+      <div class="flex items-center gap-3">
+        <span class="material-symbols-outlined text-on-surface-variant">account_balance</span>
+        <div>
+          <div class="text-[15px] text-on-surface font-sans">Transferencia bancaria</div>
+          <div class="text-[13px] text-on-surface-variant/60 font-sans">Cobro por SPEI o transferencia electrónica</div>
+        </div>
+      </div>
+      <button
+        class="shrink-0 relative w-12 h-6 rounded-full transition-colors duration-200"
+        :class="settingsStore.paymentMethods.transfer ? 'bg-primary-fixed-dim' : 'bg-surface-container-highest'"
+        aria-label="Habilitar transferencia"
+        @click="togglePaymentMethod('transfer')"
+      >
+        <span
+          class="absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-200"
+          :class="settingsStore.paymentMethods.transfer ? 'translate-x-6' : 'translate-x-0.5'"
+        ></span>
+      </button>
     </div>
 
     <!-- MODO CAJERO Y ESCÁNER Section -->

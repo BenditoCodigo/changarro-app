@@ -1,6 +1,12 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { db, type AppSettings } from '@/services/db'
+import { db, type AppSettings, type PaymentMethodsConfig } from '@/services/db'
+
+const DEFAULT_PAYMENT_METHODS: PaymentMethodsConfig = {
+  cash: true,
+  card: false,
+  transfer: false,
+}
 
 const DEFAULT_SETTINGS: AppSettings = {
   id: 'app-settings',
@@ -11,6 +17,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   shiftsEnabled: false,
   barcodeScannerEnabled: true,
   defaultHomeTab: 'catalog',
+  paymentMethods: DEFAULT_PAYMENT_METHODS,
 }
 
 export const useSettingsStore = defineStore('settings', () => {
@@ -21,6 +28,7 @@ export const useSettingsStore = defineStore('settings', () => {
   const shiftsEnabled = ref(DEFAULT_SETTINGS.shiftsEnabled)
   const barcodeScannerEnabled = ref(DEFAULT_SETTINGS.barcodeScannerEnabled ?? true)
   const defaultHomeTab = ref<'catalog' | 'scanner'>(DEFAULT_SETTINGS.defaultHomeTab ?? 'catalog')
+  const paymentMethods = ref<PaymentMethodsConfig>({ ...DEFAULT_PAYMENT_METHODS })
   const isLoaded = ref(false)
 
   async function loadSettings() {
@@ -33,6 +41,9 @@ export const useSettingsStore = defineStore('settings', () => {
       shiftsEnabled.value = stored.shiftsEnabled ?? false
       barcodeScannerEnabled.value = stored.barcodeScannerEnabled ?? true
       defaultHomeTab.value = stored.defaultHomeTab ?? 'catalog'
+      paymentMethods.value = stored.paymentMethods
+        ? { ...DEFAULT_PAYMENT_METHODS, ...stored.paymentMethods }
+        : { ...DEFAULT_PAYMENT_METHODS }
     } else {
       await db.settings.put(DEFAULT_SETTINGS)
     }
@@ -62,6 +73,21 @@ export const useSettingsStore = defineStore('settings', () => {
   async function setDefaultHomeTab(value: 'catalog' | 'scanner') {
     defaultHomeTab.value = value
     await persist()
+  }
+
+  async function setPaymentMethodEnabled(method: 'cash' | 'card' | 'transfer', enabled: boolean): Promise<boolean> {
+    if (!enabled) {
+      const activeCount = Object.values(paymentMethods.value).filter(Boolean).length
+      if (activeCount <= 1 && paymentMethods.value[method]) {
+        return false
+      }
+    }
+    paymentMethods.value = {
+      ...paymentMethods.value,
+      [method]: enabled,
+    }
+    await persist()
+    return true
   }
 
   async function setShiftsEnabled(value: boolean) {
@@ -99,6 +125,7 @@ export const useSettingsStore = defineStore('settings', () => {
       shiftsEnabled: shiftsEnabled.value,
       barcodeScannerEnabled: barcodeScannerEnabled.value,
       defaultHomeTab: defaultHomeTab.value,
+      paymentMethods: { ...paymentMethods.value },
     })
   }
 
@@ -110,6 +137,7 @@ export const useSettingsStore = defineStore('settings', () => {
     shiftsEnabled,
     barcodeScannerEnabled,
     defaultHomeTab,
+    paymentMethods,
     isLoaded,
     loadSettings,
     setTaxEnabled,
@@ -118,5 +146,6 @@ export const useSettingsStore = defineStore('settings', () => {
     setShiftsEnabled,
     setBarcodeScannerEnabled,
     setDefaultHomeTab,
+    setPaymentMethodEnabled,
   }
 })

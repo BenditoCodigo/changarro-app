@@ -44,6 +44,29 @@ function formatTime(iso: string): string {
     second: '2-digit',
   })
 }
+function paymentMethodLabel(method?: 'cash' | 'card' | 'transfer'): string {
+  switch (method) {
+    case 'card':
+      return 'Tarjeta'
+    case 'transfer':
+      return 'Transferencia'
+    case 'cash':
+    default:
+      return 'Efectivo'
+  }
+}
+
+function paymentMethodIcon(method?: 'cash' | 'card' | 'transfer'): string {
+  switch (method) {
+    case 'card':
+      return 'credit_card'
+    case 'transfer':
+      return 'account_balance'
+    case 'cash':
+    default:
+      return 'payments'
+  }
+}
 </script>
 
 <template>
@@ -105,6 +128,21 @@ function formatTime(iso: string): string {
 
       <!-- Totals card -->
       <div class="bg-surface-container border border-outline-variant rounded-[1.5rem] p-6">
+        <!-- Payment Method -->
+        <div class="flex items-center justify-between mb-3">
+          <span
+            class="uppercase tracking-wider text-[14px] font-semibold text-on-surface-variant font-display"
+          >
+            Método de Pago
+          </span>
+          <span class="inline-flex items-center gap-1.5 text-[14px] font-bold text-on-surface">
+            <span class="material-symbols-outlined text-[18px] text-surface-tint">
+              {{ paymentMethodIcon(sale.paymentMethod) }}
+            </span>
+            {{ paymentMethodLabel(sale.paymentMethod) }}
+          </span>
+        </div>
+
         <!-- Subtotal -->
         <div class="flex items-center justify-between mb-3">
           <span
@@ -145,10 +183,10 @@ function formatTime(iso: string): string {
         </div>
 
         <!-- Cash Details Separator -->
-        <div v-if="sale.receivedAmount !== undefined" class="h-px bg-outline-variant my-4"></div>
+        <div v-if="sale.paymentMethod === 'cash' && sale.receivedAmount !== undefined" class="h-px bg-outline-variant my-4"></div>
 
         <!-- Cash received -->
-        <div v-if="sale.receivedAmount !== undefined" class="flex items-center justify-between mb-3">
+        <div v-if="sale.paymentMethod === 'cash' && sale.receivedAmount !== undefined" class="flex items-center justify-between mb-3">
           <span
             class="uppercase tracking-wider text-[14px] font-semibold text-on-surface-variant font-display"
           >
@@ -160,7 +198,7 @@ function formatTime(iso: string): string {
         </div>
 
         <!-- Change returned -->
-        <div v-if="sale.changeAmount !== undefined" class="flex items-center justify-between">
+        <div v-if="sale.paymentMethod === 'cash' && sale.changeAmount !== undefined" class="flex items-center justify-between">
           <span
             class="uppercase tracking-wider text-[14px] font-semibold text-on-surface-variant font-display"
           >

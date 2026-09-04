@@ -50,6 +50,12 @@ export interface Shift {
   shortage?: number         // optional cash shortage amount (informational)
 }
 
+export interface PaymentMethodsConfig {
+  cash: boolean
+  card: boolean
+  transfer: boolean
+}
+
 export interface AppSettings {
   id: string
   taxEnabled: boolean
@@ -59,6 +65,7 @@ export interface AppSettings {
   shiftsEnabled: boolean
   barcodeScannerEnabled?: boolean
   defaultHomeTab?: 'catalog' | 'scanner'
+  paymentMethods?: PaymentMethodsConfig
 }
 
 export interface CartItemRecord {

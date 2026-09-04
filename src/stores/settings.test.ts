@@ -39,4 +39,46 @@ describe('Settings Store - Scanner & Cashier Mode', () => {
     const fromDb = await db.settings.get('app-settings')
     expect(fromDb?.defaultHomeTab).toBe('scanner')
   })
+
+  describe('Payment Methods Configuration', () => {
+    it('initializes with only cash payment method enabled by default', async () => {
+      const store = useSettingsStore()
+      await store.loadSettings()
+
+      expect(store.paymentMethods).toEqual({
+        cash: true,
+        card: false,
+        transfer: false,
+      })
+    })
+
+    it('setPaymentMethodEnabled updates and persists payment methods', async () => {
+      const store = useSettingsStore()
+      await store.loadSettings()
+
+      const success = await store.setPaymentMethodEnabled('card', true)
+      expect(success).toBe(true)
+      expect(store.paymentMethods.card).toBe(true)
+
+      const fromDb = await db.settings.get('app-settings')
+      expect(fromDb?.paymentMethods?.card).toBe(true)
+    })
+
+    it('prevents disabling the last active payment method', async () => {
+      const store = useSettingsStore()
+      await store.loadSettings()
+
+      expect(store.paymentMethods).toEqual({
+        cash: true,
+        card: false,
+        transfer: false,
+      })
+
+      // Attempt to disable cash (the only active method)
+      const success = await store.setPaymentMethodEnabled('cash', false)
+      expect(success).toBe(false)
+      // Cash should remain enabled
+      expect(store.paymentMethods.cash).toBe(true)
+    })
+  })
 })
