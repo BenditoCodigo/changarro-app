@@ -2,6 +2,7 @@
 module.exports = {
   appId: 'com.benditocodigo.changarro',
   productName: 'Changarro',
+  compression: 'maximum',
   directories: {
     output: 'dist',
     buildResources: 'assets',
@@ -10,12 +11,20 @@ module.exports = {
     'build/**/*',
     'app/**/*',
     'generated/**/*',
-    // `assets` is also the electron-builder `buildResources` directory, whose
-    // contents are NOT packaged by default. Include it explicitly so the
-    // splash screen (and any other runtime assets) ship in the app.
     'assets/**/*',
     'package.json',
-    // Platform runtime + plugins, prepared by `capacitor-electron vendor`.
     { from: 'vendor/node_modules', to: 'node_modules' },
   ],
+  dmg: {
+    format: 'ULFO',
+  },
+  mac: {
+    category: 'public.app-category.business',
+    target: [
+      {
+        target: 'dmg',
+        arch: ['arm64'],
+      },
+    ],
+  },
 };
