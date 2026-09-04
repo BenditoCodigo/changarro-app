@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="documentacion/assets/logo.png" alt="Changarro" width="120" height="120" />
+<img src="documentacion/assets/play-store-feature-graphic-1024x500.png" alt="Changarro - Punto de Venta Gratuito" width="100%" />
 
 # Changarro
 
