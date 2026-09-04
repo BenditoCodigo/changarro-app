@@ -1,3 +1,6 @@
+import 'material-symbols/outlined.css'
+import '@fontsource/plus-jakarta-sans'
+import '@fontsource/atkinson-hyperlegible'
 import './assets/main.css'
 
 import { createApp } from 'vue'
