@@ -45,7 +45,6 @@ jobs:
     needs: quality
     if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-    environment: prod
     env:
       KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
       KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
